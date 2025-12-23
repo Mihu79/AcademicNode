@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\AcademicNode.API",
+    "\\AcademicNode.API\\Controllers",
+    "\\AcademicNode.API\\DTOs",
+    "\\AcademicNode.API\\Services",
+    "\\AcademicNode.UI",
+    "\\AcademicNode.UI\\src",
+    "\\AcademicNode.UI\\src\\app",
+    "\\AcademicNode.UI\\src\\app\\components",
+    "\\AcademicNode.UI\\src\\app\\components\\feed",
+    "\\AcademicNode.UI\\src\\app\\services"
+  ],
+  "SelectedNode": "\\AcademicNode.API\\Controllers\\AccountController.cs",
+  "PreviewInSolutionExplorer": false
+}

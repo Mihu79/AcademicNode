@@ -1,0 +1,110 @@
+/* Titlul paginii */
+h1 {
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+}
+
+/* Cardurile de postari */
+.mb-3 .p-card {
+  /* Adaugam o tranzitie usoara la hover */
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+  .mb-3 .p-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-purple);
+  }
+
+/* Subheader-ul postarii (Autorul) */
+.p-card .p-card-subheader {
+  color: var(--neon-cyan) !important;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+/* Data din footer */
+.text-secondary {
+  color: var(--text-secondary) !important;
+  font-size: 0.8rem;
+}
+
+/* --- STILIZARE DIALOG (Fereastra de adaugare) --- */
+
+/* Etichetele (Labels) din formular */
+label {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block; /* Asigura ca labelul e deasupra inputului */
+}
+
+/* Spatierea in formular */
+.flex.flex-column.gap-2 {
+  margin-bottom: 20px; /* Spatiu mai mare intre campuri */
+}
+
+/* Asiguram ca inputurile ocupa toata latimea disponibila */
+input[type=text], textarea {
+  width: 100%;
+}
+/* ... stilurile tale anterioare ... */
+
+/* 1. Spatiul dintre Buton si Prima Postare */
+.action-bar {
+  margin-bottom: 3rem; /* Aprox 48px - destul de mult spatiu */
+  /* Optional: Daca vrei o linie despartitoare subtila sub buton */
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 2. Spatiul dintre Postari */
+.post-item {
+  margin-bottom: 2.5rem; /* Aprox 40px intre carduri */
+}
+
+  /* Facem cardurile sa iasa in evidenta cand treci cu mouse-ul */
+  .post-item .p-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .post-item:hover .p-card {
+    transform: translateY(-5px); /* Se ridica putin */
+    box-shadow: 0 10px 40px -10px rgba(0, 242, 255, 0.15); /* Glow albastru subtil */
+  }
+
+/* ... pastreaza stilurile pentru action-bar si post-item ... */
+
+/* 1. Spatierea Textului (Merge sigur acum) */
+.post-content {
+  margin: 0;
+  margin-bottom: 2rem; /* Spatiu mare sub text (aprox 32px) */
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* 2. Buton EDIT - Galben Neon */
+/* ::ng-deep forteaza stilul sa intre in componenta PrimeNG */
+::ng-deep .btn-edit:hover {
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  color: #ffc107 !important;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.4);
+  transform: scale(1.1);
+}
+
+/* 3. Buton DELETE - Rosu Neon */
+::ng-deep .btn-delete:hover {
+  background-color: rgba(255, 82, 82, 0.15) !important;
+  color: #ff5252 !important;
+  box-shadow: 0 0 15px rgba(255, 82, 82, 0.4);
+  transform: scale(1.1);
+}
+
+/* Tranzitie fina */
+::ng-deep .p-button {
+  transition: all 0.2s ease-in-out !important;
+}

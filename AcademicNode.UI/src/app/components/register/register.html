@@ -1,0 +1,32 @@
+<div style="display: flex; justify-content: center; align-items: center; height: 90vh;">
+
+  <p-card header="Creează Cont Nou" [style]="{ width: '400px' }">
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="username">Nume Utilizator</label>
+        <input pInputText id="username" [(ngModel)]="model.username" placeholder="ex: student2024" />
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="email">Email</label>
+        <input pInputText id="email" [(ngModel)]="model.email" placeholder="nume@student.ro" />
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="password">Parolă</label>
+        <p-password id="password" [(ngModel)]="model.password" [toggleMask]="true"></p-password>
+      </div>
+
+      <p-button label="Înregistrează-te" icon="pi pi-user-plus" (onClick)="register()"></p-button>
+
+      <div style="text-align: center; margin-top: 10px;">
+        <small>Ai deja cont? <a routerLink="/login" style="color: var(--primary-color); text-decoration: none;">Loghează-te</a></small>
+      </div>
+
+    </div>
+
+  </p-card>
+
+</div>

@@ -1,0 +1,39 @@
+/* Containerul pentru meniu */
+.card {
+  background-color: var(--bg-app);
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Suprascriem bara de meniu PrimeNG */
+.p-menubar {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+  /* Elementele din meniu */
+  .p-menubar .p-menuitem-link .p-menuitem-text,
+  .p-menubar .p-menuitem-link .p-menuitem-icon {
+    color: var(--text-secondary) !important;
+  }
+
+  /* Hover pe elementele din meniu */
+  .p-menubar .p-menuitem-link:hover {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+    .p-menubar .p-menuitem-link:hover .p-menuitem-text,
+    .p-menubar .p-menuitem-link:hover .p-menuitem-icon {
+      color: var(--neon-cyan) !important;
+      text-shadow: 0 0 5px var(--neon-cyan);
+    }
+
+/* Logo-ul text */
+.text-primary {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+  letter-spacing: 1px;
+}

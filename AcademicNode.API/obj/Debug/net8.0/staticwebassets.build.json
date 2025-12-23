@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "xrHrf1PflShM/gsTT3TnWaH+jD2Fi7AyccpvpgI1GNs=",
+  "Source": "AcademicNode.API",
+  "BasePath": "_content/AcademicNode.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

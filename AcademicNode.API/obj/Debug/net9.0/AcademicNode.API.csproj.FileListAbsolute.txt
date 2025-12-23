@@ -1,0 +1,8 @@
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.csproj.AssemblyReference.cache
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.AssemblyInfoInputs.cache
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.AssemblyInfo.cs
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.csproj.CoreCompileInputs.cache
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net9.0\AcademicNode.API.sourcelink.json

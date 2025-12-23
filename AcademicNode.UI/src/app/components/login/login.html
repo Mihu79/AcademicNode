@@ -1,0 +1,23 @@
+<div style="display: flex; justify-content: center; align-items: center; height: 80vh;">
+
+  <p-card header="Autentificare" [style]="{ width: '400px' }">
+
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="email">Email</label>
+        <input pInputText id="email" [(ngModel)]="model.email" placeholder="nume@student.ro" />
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <label for="password">Parolă</label>
+        <p-password id="password" [(ngModel)]="model.password" [feedback]="false" [toggleMask]="true"></p-password>
+      </div>
+
+      <p-button label="Intră în cont" icon="pi pi-sign-in" (onClick)="login()"></p-button>
+
+    </div>
+
+  </p-card>
+
+</div>

@@ -1,0 +1,100 @@
+/* Importăm un font modern (opțional, dar arată mai bine) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+
+:root {
+  /* --- PALETA DE CULORI FUTURISTA --- */
+  --bg-app: #0a0e17; /* Fundalul principal (foarte inchis) */
+  --bg-card: #131c2d; /* Fundalul cardurilor */
+  --text-primary: #e0e6ed; /* Text principal (albicios) */
+  --text-secondary: #94a3b8; /* Text secundar (gri) */
+  /* Accente Neon */
+  --neon-cyan: #00f2ff;
+  --neon-purple: #bd00ff;
+  /* Gradient pentru butoane/tratamente */
+  --gradient-primary: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+  /* Efecte de stralucire (Glow) */
+  --glow-cyan: 0 0 10px rgba(0, 242, 255, 0.5);
+  --glow-purple: 0 0 10px rgba(189, 0, 255, 0.5);
+}
+
+/* Resetare de baza */
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-app); /* Aplicam fundalul intunecat */
+  color: var(--text-primary);
+  height: 100%;
+}
+
+/* --- SUPRASCRIERE PRIMENG (General) --- */
+
+/* 1. Cardurile sa fie inchise la culoare si cu colturi rotunjite */
+.p-card {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-radius: 16px !important;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Bordura subtila */
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+  .p-card .p-card-title {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+/* 2. Butoanele sa aiba gradient neon */
+.p-button {
+  background: var(--gradient-primary) !important;
+  border: none !important;
+  font-weight: 600;
+  border-radius: 8px !important;
+  transition: all 0.3s ease;
+}
+
+  .p-button:hover {
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px); /* Efect de ridicare la hover */
+  }
+
+  /* Butoanele secundare (cele text) */
+  .p-button.p-button-text {
+    background: transparent !important;
+    color: var(--neon-cyan) !important;
+  }
+
+    .p-button.p-button-text:hover {
+      background: rgba(0, 242, 255, 0.1) !important;
+    }
+
+/* 3. Input-urile si Textarea (Aici reparam si problema ta!) */
+.p-inputtext {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+}
+
+  /* Cand dai click in input, sa straluceasca */
+  .p-inputtext:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: var(--glow-cyan) !important;
+  }
+
+/* REZOLVARE PROBLEMA TA: Opreste redimensionarea la textarea */
+textarea.p-inputtext {
+  resize: none; /* <--- ASTA E LINIA MAGICA */
+}
+
+/* 4. Dialogul (Fereastra modala) */
+.p-dialog .p-dialog-header,
+.p-dialog .p-dialog-content,
+.p-dialog .p-dialog-footer {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+}
+
+.p-dialog .p-dialog-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
