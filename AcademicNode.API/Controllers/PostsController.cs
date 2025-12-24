@@ -31,7 +31,8 @@ namespace AcademicNode.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Post>> CreatePost(PostDto postDto)
+        // [FromForm] este CRITIC! Ii spune serverului sa nu astepte JSON, ci date de formular
+        public async Task<ActionResult<Post>> CreatePost([FromForm] PostDto postDto)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var appUser = await _context.Users.FindAsync(userId);
@@ -46,26 +47,68 @@ namespace AcademicNode.API.Controllers
                 AppUser = appUser
             };
 
+            // --- LOGICA PENTRU POZA ---
+            if (postDto.File != null && postDto.File.Length > 0)
+            {
+                // 1. Generam un nume unic fisierului (ca sa nu se suprascrie daca doi useri pun "poza.jpg")
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(postDto.File.FileName);
+
+                // 2. Calea unde salvam: folderul wwwroot/uploads
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                // Cream folderul daca nu exista
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                var filePath = Path.Combine(folderPath, fileName);
+
+                // 3. Copiem fisierul fizic pe hard disk
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await postDto.File.CopyToAsync(stream);
+                }
+
+                // 4. Salvam URL-ul in baza de date (calea relativa)
+                // Accesibil la http://localhost:5160/uploads/nume_poza.jpg
+                post.PhotoUrl = "uploads/" + fileName;
+            }
+            // --------------------------
+
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
-            return Ok(post); // Returnam postarea creata
+            return Ok(post);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdatePost(int id, PostDto postDto)
+        // --- AM ADAUGAT [FromForm] AICI ---
+        public async Task<ActionResult> UpdatePost(int id, [FromForm] PostDto postDto)
         {
             var post = await _context.Posts.FindAsync(id);
-            if (post == null) return NotFound();
 
-            // Verificam daca e postarea mea
+            if (post == null) return NotFound("Postarea nu există");
+
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            if (post.AppUserId != currentUserId) return Unauthorized("Nu poti edita postarea altcuiva!");
+            if (post.AppUserId != currentUserId)
+            {
+                return Unauthorized("Nu poți edita postarea altcuiva!");
+            }
 
+            // Actualizam datele
             post.Title = postDto.Title;
             post.Content = postDto.Content;
 
+            // Optional: Daca vrei sa permiti si schimbarea pozei la editare in viitor:
+            /*
+            if(postDto.File != null) {
+                // Logica de salvare poza...
+            }
+            */
+
             await _context.SaveChangesAsync();
+
             return Ok(post);
         }
 

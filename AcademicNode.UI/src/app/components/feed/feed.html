@@ -1,5 +1,4 @@
 <div class="p-4" style="max-width: 800px; margin: 0 auto;">
-
   <h1 class="mb-4 text-center">Flux Postări</h1>
 
   <div class="action-bar text-right mb-4">
@@ -7,7 +6,6 @@
   </div>
 
   <div *ngIf="posts.length === 0" class="text-center p-5">
-
     <p-card>
       <h3>Nu există postări momentan.</h3>
       <p>Fii tu primul care scrie ceva!</p>
@@ -15,50 +13,35 @@
   </div>
 
   <div *ngFor="let post of posts" class="post-item mb-3">
-
     <p-card [header]="post.title"
-            [subheader]="'De: ' + (post.appUser?.userName || post.user?.userName || 'Anonim')">
+            [subheader]="'De: ' + (post.appUser?.userName || 'Anonim')">
 
-      <p class="post-content" style="white-space: pre-wrap;">{{ post.content }}</p>
+      <div *ngIf="post.photoUrl" class="mb-3">
+        <img [src]="getPhotoUrl(post.photoUrl)"
+             alt="Post image"
+             style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
+      </div>
+
+      <p class="post-content">{{ post.content }}</p>
 
       <ng-template pTemplate="footer">
         <div class="flex justify-content-between align-items-center custom-footer">
-
           <div class="flex align-items-center gap-3">
-
             <p-button [icon]="isLiked(post) ? 'pi pi-heart-fill' : 'pi pi-heart'"
                       [label]="(post.likes?.length || 0).toString()"
-                      [rounded]="true"
-                      [text]="true"
+                      [rounded]="true" [text]="true"
                       [severity]="isLiked(post) ? 'danger' : 'secondary'"
-                      pTooltip="Îmi place"
-                      tooltipPosition="top"
                       (onClick)="toggleLike(post)">
             </p-button>
-
             <small class="text-secondary">{{ post.createdAt | date:'short' }}</small>
           </div>
 
-          <div *ngIf="currentUser && (currentUser.id === post.appUserId || currentUser.id === post.userId)" class="flex gap-2">
-
-            <p-button icon="pi pi-pencil"
-                      styleClass="p-button-rounded p-button-text p-button-warning btn-edit"
-                      pTooltip="Editează"
-                      tooltipPosition="top"
-                      (onClick)="showEditDialog(post)">
-            </p-button>
-
-            <p-button icon="pi pi-trash"
-                      styleClass="p-button-rounded p-button-text p-button-danger btn-delete"
-                      pTooltip="Șterge"
-                      tooltipPosition="top"
-                      (onClick)="deletePost(post.id)">
-            </p-button>
-
+          <div *ngIf="currentUser && (currentUser.id === post.appUserId)" class="flex gap-2">
+            <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text p-button-warning btn-edit" (onClick)="showEditDialog(post)"></p-button>
+            <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger btn-delete" (onClick)="deletePost(post.id)"></p-button>
           </div>
         </div>
       </ng-template>
-
     </p-card>
   </div>
 
@@ -66,20 +49,29 @@
             [(visible)]="visible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
 
     <div class="flex flex-column gap-3">
-      <div class="flex flex-column gap-2">
+      <div class="flex flex-column gap-4">
         <label>Titlu</label>
-        <input pInputText [(ngModel)]="postData.title" placeholder="Despre ce vrei să scrii?" />
+        <input pInputText [(ngModel)]="postData.title" />
       </div>
 
       <div class="flex flex-column gap-2">
         <label>Conținut</label>
-        <textarea pInputText [(ngModel)]="postData.content" rows="5" placeholder="Scrie detaliile aici..."></textarea>
+        <textarea pInputText [(ngModel)]="postData.content" rows="5"></textarea>
+      </div>
+
+      <div *ngIf="!isEditMode" class="flex flex-column gap-2">
+        <label>Alege o poză</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="p-inputtext">
+
+        <div *ngIf="previewUrl" class="mt-3 text-center">
+          <p class="mb-2" style="color: var(--neon-cyan); font-size: 0.8rem;">Preview:</p>
+          <img [src]="previewUrl" class="preview-image">
+        </div>
       </div>
 
       <div class="flex justify-content-end mt-3">
-        <p-button [label]="isEditMode ? 'Salvează Modificările' : 'Publică'" icon="pi pi-check" (onClick)="submitPost()"></p-button>
+        <p-button [label]="isEditMode ? 'Salvează' : 'Publică'" icon="pi pi-check" (onClick)="submitPost()"></p-button>
       </div>
     </div>
   </p-dialog>
-
 </div>

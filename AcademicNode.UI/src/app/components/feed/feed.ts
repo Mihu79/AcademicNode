@@ -1,11 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-// --- ATENTIE AICI LA IMPORT ---
-// Daca fisierul tau fizic se numeste "api.ts", lasa linia de mai jos asa:
+// Asigura-te ca aceasta cale este corecta pentru proiectul tau
 import { ApiService } from '../../services/api';
-// Daca fisierul tau fizic se numeste "api.service.ts", pune: from '../../services/api.service';
-// ------------------------------
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -25,10 +22,18 @@ export class FeedComponent implements OnInit {
   posts: any[] = [];
   visible: boolean = false;
   isEditMode: boolean = false;
+
+  // Variabile pentru Editare/Creare
   currentPostId: number | null = null;
   currentUser: any = null;
-
   postData: any = { title: '', content: '' };
+
+  // --- VARIABILE PENTRU FISIER SI PREVIEW ---
+  selectedFile: File | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
+
+  // URL-ul de baza pentru poze (Backend)
+  baseUrl = 'http://localhost:5160/';
 
   ngOnInit() {
     const userString = localStorage.getItem('user');
@@ -39,7 +44,6 @@ export class FeedComponent implements OnInit {
   }
 
   loadPosts() {
-    // Am adaugat tipul : any la 'data' si 'err'
     this.apiService.getPosts().subscribe({
       next: (data: any) => this.posts = data,
       error: (err: any) => console.error('Eroare incarcare postari:', err)
@@ -49,6 +53,8 @@ export class FeedComponent implements OnInit {
   showAddDialog() {
     this.isEditMode = false;
     this.postData = { title: '', content: '' };
+    this.selectedFile = null;
+    this.previewUrl = null; // Resetam preview-ul
     this.visible = true;
   }
 
@@ -56,31 +62,55 @@ export class FeedComponent implements OnInit {
     this.isEditMode = true;
     this.currentPostId = post.id;
     this.postData = { title: post.title, content: post.content };
+    this.selectedFile = null;
+    this.previewUrl = null;
     this.visible = true;
+  }
+
+  // --- FUNCTIE ACTUALIZATA: Citeste fisierul si face Preview ---
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+
+      // Logica pentru Preview
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.previewUrl = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   submitPost() {
     if (!this.currentUser) {
-      alert("Trebuie să te autentifici pentru a posta!");
+      alert("Trebuie să te autentifici!");
       return;
     }
 
+    // --- CONSTRUIM FORMULARUL (FORM DATA) PENTRU AMBELE CAZURI ---
+    const formData = new FormData();
+    formData.append('title', this.postData.title);
+    formData.append('content', this.postData.content);
+
+    // Daca avem fisier selectat, il punem (valabil si la editare daca vrei pe viitor)
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    }
+    // -------------------------------------------------------------
+
     if (this.isEditMode) {
-      // Am adaugat tipul : any la err
-      this.apiService.updatePost(this.currentPostId!, this.postData).subscribe({
+      // EDITARE - Trimitem formData in loc de JSON simplu
+      this.apiService.updatePost(this.currentPostId!, formData).subscribe({
         next: () => {
           this.visible = false;
           this.loadPosts();
         },
-        error: (err: any) => {
-          console.error(err);
-          alert("Eroare la editare!");
-        }
+        error: (err: any) => alert("Eroare la editare!")
       });
-
     } else {
-      // Am adaugat tipul : any la err
-      this.apiService.createPost(this.postData).subscribe({
+      // CREARE
+      this.apiService.createPost(formData).subscribe({
         next: () => {
           this.visible = false;
           this.loadPosts();
@@ -93,34 +123,29 @@ export class FeedComponent implements OnInit {
     }
   }
 
+  getPhotoUrl(path: string): string {
+    if (!path) return '';
+    return this.baseUrl + path.replace(/\\/g, '/');
+  }
+
   isLiked(post: any): boolean {
     if (!this.currentUser || !post.likes) return false;
     return post.likes.some((like: any) => like.sourceUserId === this.currentUser.id);
   }
 
   toggleLike(post: any) {
-    if (!this.currentUser) {
-      alert("Trebuie sa fii logat!");
-      return;
-    }
-
-    // Am adaugat tipul : any la err
+    if (!this.currentUser) return;
     this.apiService.likePost(post.id).subscribe({
-      next: () => {
-        this.loadPosts();
-      },
-      error: (err: any) => {
-        console.error('Eroare la like', err);
-        alert("Nu am putut da like.");
-      }
+      next: () => this.loadPosts(),
+      error: () => alert("Eroare like")
     });
   }
 
   deletePost(id: number) {
-    if (confirm("Sigur vrei să ștergi postarea?")) {
+    if (confirm("Sigur ștergi?")) {
       this.apiService.deletePost(id).subscribe({
         next: () => this.loadPosts(),
-        error: () => alert("Eroare la stergere")
+        error: () => alert("Eroare ștergere")
       });
     }
   }

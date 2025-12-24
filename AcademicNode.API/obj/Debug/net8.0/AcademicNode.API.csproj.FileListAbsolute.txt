@@ -140,3 +140,4 @@ C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net8.0\r
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\AcademicNode.API.staticwebassets.runtime.json

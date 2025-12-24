@@ -1,17 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\AcademicNode.API",
-    "\\AcademicNode.API\\Controllers",
-    "\\AcademicNode.API\\DTOs",
-    "\\AcademicNode.API\\Services",
-    "\\AcademicNode.UI",
+    "\\AcademicNode.API\\bin\\Release",
+    "\\AcademicNode.API\\Interfaces",
+    "\\AcademicNode.API\\Migrations",
+    "\\AcademicNode.API\\obj",
     "\\AcademicNode.UI\\src",
     "\\AcademicNode.UI\\src\\app",
     "\\AcademicNode.UI\\src\\app\\components",
-    "\\AcademicNode.UI\\src\\app\\components\\feed",
-    "\\AcademicNode.UI\\src\\app\\services"
+    "\\AcademicNode.UI\\src\\app\\components\\login",
+    "\\AcademicNode.UI\\src\\app\\components\\register"
   ],
-  "SelectedNode": "\\AcademicNode.API\\Controllers\\AccountController.cs",
+  "SelectedNode": "\\AcademicNode.API",
   "PreviewInSolutionExplorer": false
 }
