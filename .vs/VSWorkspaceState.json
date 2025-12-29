@@ -1,16 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\AcademicNode.API\\bin\\Release",
-    "\\AcademicNode.API\\Interfaces",
-    "\\AcademicNode.API\\Migrations",
-    "\\AcademicNode.API\\obj",
+    "\\AcademicNode.UI",
     "\\AcademicNode.UI\\src",
     "\\AcademicNode.UI\\src\\app",
     "\\AcademicNode.UI\\src\\app\\components",
-    "\\AcademicNode.UI\\src\\app\\components\\login",
-    "\\AcademicNode.UI\\src\\app\\components\\register"
+    "\\AcademicNode.UI\\src\\app\\components\\feed",
+    "\\AcademicNode.UI\\src\\app\\services"
   ],
-  "SelectedNode": "\\AcademicNode.API",
+  "SelectedNode": "\\AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
   "PreviewInSolutionExplorer": false
 }

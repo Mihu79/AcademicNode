@@ -26,7 +26,10 @@ namespace AcademicNode.API.Controllers
             return await _context.Posts
                 .Include(p => p.AppUser)
                 .Include(p => p.Likes)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.AppUser)
                 .OrderByDescending(p => p.CreatedAt)
+                .AsSplitQuery()
                 .ToListAsync();
         }
 

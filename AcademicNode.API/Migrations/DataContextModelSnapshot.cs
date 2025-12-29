@@ -132,6 +132,35 @@ namespace AcademicNode.API.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("AcademicNode.API.Entities.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("AcademicNode.API.Entities.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -296,6 +325,25 @@ namespace AcademicNode.API.Migrations
                     b.HasDiscriminator().HasValue("AppUserRole");
                 });
 
+            modelBuilder.Entity("AcademicNode.API.Entities.Comment", b =>
+                {
+                    b.HasOne("AcademicNode.API.Entities.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AcademicNode.API.Entities.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("AcademicNode.API.Entities.Post", b =>
                 {
                     b.HasOne("AcademicNode.API.Entities.AppUser", "AppUser")
@@ -397,6 +445,8 @@ namespace AcademicNode.API.Migrations
 
             modelBuilder.Entity("AcademicNode.API.Entities.Post", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618

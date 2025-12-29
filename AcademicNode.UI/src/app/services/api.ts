@@ -59,4 +59,9 @@ export class ApiService {
     // Am adaugat headers aici
     return this.http.post(`${this.baseUrl}/posts/${id}/like`, {}, { headers: this.getHeaders() });
   }
+
+  addComment(postId: number, content: string): Observable<any> {
+    // Schimbam cheia sa fie cu litera mare, exact ca in C#
+    return this.http.post(`${this.baseUrl}/comments/${postId}`, { Content: content }, { headers: this.getHeaders() });
+  }
 }

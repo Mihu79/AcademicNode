@@ -17,5 +17,7 @@ namespace AcademicNode.API.Entities
 
         
         public List<PostLike> Likes { get; set; } = new List<PostLike>();
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

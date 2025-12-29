@@ -17,6 +17,7 @@ namespace AcademicNode.API.Data
 
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostLike> Likes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -45,6 +46,12 @@ namespace AcademicNode.API.Data
             // 3. Likes
             builder.Entity<PostLike>()
                 .HasKey(k => new { k.SourceUserId, k.TargetPostId });
+
+            builder.Entity<Comment>()
+                .HasOne(c => c.AppUser)
+                .WithMany() // Userul are multe comentarii (chiar daca nu am pus lista in AppUser)
+                .HasForeignKey(c => c.AppUserId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // --- AICI ESTE FIX-UL ---
             builder.Entity<PostLike>()

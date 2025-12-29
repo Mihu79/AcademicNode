@@ -135,8 +135,31 @@ export class FeedComponent implements OnInit {
 
   toggleLike(post: any) {
     if (!this.currentUser) return;
+
+    // 1. Verificam daca userul a dat deja like inainte sa trimitem cererea
+    const alreadyLiked = this.isLiked(post);
+
     this.apiService.likePost(post.id).subscribe({
-      next: () => this.loadPosts(),
+      next: () => {
+        // --- AICI E SCHIMBAREA ---
+        // NU mai apelam this.loadPosts();
+
+        if (alreadyLiked) {
+          // CAZUL UNLIKE: Scoatem like-ul nostru din lista locala
+          post.likes = post.likes.filter((l: any) => l.sourceUserId !== this.currentUser.id);
+        } else {
+          // CAZUL LIKE: Adaugam un like "fals" in lista locala ca sa se vada imediat
+          // Verificam sa existe array-ul, daca e null il cream
+          if (!post.comments) post.comments = [];
+          if (!post.likes) post.likes = [];
+
+          post.likes.push({
+            sourceUserId: this.currentUser.id,
+            targetPostId: post.id
+          });
+        }
+        // -------------------------
+      },
       error: () => alert("Eroare like")
     });
   }
@@ -148,5 +171,28 @@ export class FeedComponent implements OnInit {
         error: () => alert("Eroare ștergere")
       });
     }
+  }
+
+  toggleComments(post: any) {
+    post.showComments = !post.showComments;
+  }
+
+  submitComment(post: any) {
+    if (!this.currentUser) return;
+    if (!post.newCommentText || post.newCommentText.trim() === '') return;
+
+    this.apiService.addComment(post.id, post.newCommentText).subscribe({
+      next: (newComment: any) => {
+        // Adaugam comentariul in lista postarii fara sa dam refresh la toata pagina
+        if (!post.comments) {
+          post.comments = [];
+        }
+        post.comments.push(newComment);
+
+        // Resetam campul de text
+        post.newCommentText = '';
+      },
+      error: () => alert("Eroare la adăugare comentariu")
+    });
   }
 }
