@@ -1,13 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\AcademicNode.UI",
-    "\\AcademicNode.UI\\src",
+    "\\AcademicNode.API\\wwwroot\\images",
     "\\AcademicNode.UI\\src\\app",
     "\\AcademicNode.UI\\src\\app\\components",
     "\\AcademicNode.UI\\src\\app\\components\\feed",
+    "\\AcademicNode.UI\\src\\app\\components\\member-detail",
+    "\\AcademicNode.UI\\src\\app\\models",
     "\\AcademicNode.UI\\src\\app\\services"
   ],
-  "SelectedNode": "\\AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
+  "SelectedNode": "\\AcademicNode.UI",
   "PreviewInSolutionExplorer": false
 }

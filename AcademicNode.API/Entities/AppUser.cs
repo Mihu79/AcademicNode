@@ -10,10 +10,7 @@ namespace AcademicNode.API.Entities
         // NU mai scrie public string UserName { get; set; } -> Vine automat
         // NU mai scrie public string Email { get; set; } -> Vine automat
 
-        public DateTime DateOfBirth { get; set; }
-        public string KnownAs { get; set; }
-        public DateTime Created { get; set; } = DateTime.UtcNow;
-        public DateTime LastActive { get; set; } = DateTime.UtcNow;
+       
 
         [JsonIgnore]
         public ICollection<PostLike> LikedPosts { get; set; }
@@ -22,5 +19,20 @@ namespace AcademicNode.API.Entities
         public ICollection<AppUserRole> UserRoles { get; set; }
 
         public ICollection<Post> Posts { get; set; }
+
+        public DateTime DateOfBirth { get; set; }
+        public string KnownAs { get; set; } // Porecla sau Nume de scena
+        public DateTime Created { get; set; } = DateTime.Now;
+        public DateTime LastActive { get; set; } = DateTime.Now;
+        public string Gender { get; set; }
+        public string Introduction { get; set; } // Bio / Despre mine
+        public string City { get; set; }
+        public string Country { get; set; }
+
+        // Poza de profil (separata de pozele din postari)
+        public string PhotoUrl { get; set; }
+        // -----------------------------------------------
+
+       
     }
 }

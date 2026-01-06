@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Member } from '../models/member';
 
 @Injectable({
   providedIn: 'root'
@@ -63,5 +64,21 @@ export class ApiService {
   addComment(postId: number, content: string): Observable<any> {
     // Schimbam cheia sa fie cu litera mare, exact ca in C#
     return this.http.post(`${this.baseUrl}/comments/${postId}`, { Content: content }, { headers: this.getHeaders() });
+  }
+
+  getMember(username: string): Observable<Member> {
+    return this.http.get<Member>(`${this.baseUrl}/users/${username}`, { headers: this.getHeaders() });
+  }
+
+  updateMember(member: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/users`, member, { headers: this.getHeaders() });
+  }
+
+  // Upload Poza Profil
+  uploadProfilePhoto(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post(`${this.baseUrl}/users/add-photo`, formData, { headers: this.getHeaders() });
   }
 }

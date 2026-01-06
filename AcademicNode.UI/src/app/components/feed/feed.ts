@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 // Asigura-te ca aceasta cale este corecta pentru proiectul tau
 import { ApiService } from '../../services/api';
 import { CardModule } from 'primeng/card';
@@ -12,7 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardModule, ButtonModule, DialogModule, InputTextModule, TooltipModule],
+  imports: [CommonModule, FormsModule, CardModule, RouterModule, ButtonModule, DialogModule, InputTextModule, TooltipModule],
   templateUrl: './feed.html',
   styleUrl: './feed.css'
 })

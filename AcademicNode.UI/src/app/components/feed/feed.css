@@ -192,3 +192,17 @@ h1 {
     transform: scale(1.1);
     box-shadow: 0 0 15px var(--neon-cyan);
   }
+
+.author-link {
+  cursor: pointer;
+  color: var(--neon-cyan);
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+  .author-link:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 5px var(--neon-cyan);
+  }
+/* Butonul Profilul Meu - Vizibilitate Maxima */

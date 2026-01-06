@@ -1,0 +1,106 @@
+<div class="container p-4" *ngIf="member">
+  <div class="grid">
+
+    <div class="col-12 md:col-4">
+      <p-card>
+        <div class="text-center pt-3 pb-3">
+          <div class="profile-image-container mb-4">
+            <img [src]="member.photoUrl || 'https://user-images.githubusercontent.com/11250/39013954-f5091c3a-43e6-11e8-9cac-37cf8e8c8e4e.jpg'"
+                 [alt]="member.knownAs"
+                 class="profile-image">
+
+            <div *ngIf="currentUser && member.username === currentUser.username"
+                 class="photo-upload-btn"
+                 (click)="fileInput.click()">
+              <i class="pi pi-camera" style="font-size: 1.5rem;"></i>
+            </div>
+
+            <input #fileInput type="file" (change)="onPhotoSelected($event)" accept="image/*" style="display: none;">
+          </div>
+
+          <h2 class="text-white mb-2">{{ member.knownAs || member.username }}</h2>
+          <p class="text-secondary" style="font-size: 1.1rem;">
+            <i class="pi pi-map-marker mr-2" style="color: var(--neon-cyan)"></i>
+            {{ member.city || 'N/A' }}, {{ member.country || 'N/A' }}
+          </p>
+
+          <div *ngIf="currentUser && member.username === currentUser.username" class="mt-4 mb-2 btn-edit-profile">
+            <p-button label="EDITEAZĂ PROFILUL"
+                      icon="pi pi-pencil"
+                      [style]="{'width': '100%'}"
+                      (onClick)="showEditDialog()">
+            </p-button>
+            <br /> <br />
+          </div>
+        </div>
+
+        
+
+        
+         
+          <div class="flex justify-content-between mb-3">
+            <strong style="color: var(--neon-cyan);">Membru din:</strong>
+            <span class="text-white">{{ member.created | date:'mediumDate' }}</span>
+          </div>
+         
+       
+      </p-card>
+    </div>
+
+    <div class="col-12 md:col-8">
+      <p-card header="Despre Mine">
+        <p class="text-gray-300 p-3" style="line-height: 1.8; font-size: 1.05rem; background: rgba(255,255,255,0.03); border-radius: 8px;">
+          {{ member.introduction || 'Acest utilizator nu a adăugat încă o descriere.' }}
+        </p>
+      </p-card>
+    </div>
+
+  </div>
+</div>
+<p-dialog header="Actualizare Profil"
+          [(visible)]="editVisible"
+          [modal]="true"
+          [style]="{width: '550px'}"
+          [draggable]="false"
+          [resizable]="false">
+
+  <div class="flex flex-column gap-4 pt-2" *ngIf="member">
+
+    <div class="flex flex-column gap-2">
+      <label class="font-bold text-gray-400">Descriere (Bio)</label>
+      <textarea class="p-inputtext w-full"
+                [(ngModel)]="member.introduction"
+                rows="6"
+                placeholder="Spune ceva despre tine..."
+                style="resize: none; height: 150px;">
+            </textarea>
+    </div>
+    <br />
+    <div class="grid formgrid p-fluid">
+      <div class="col-6 mb-2">
+        <label class="font-bold text-gray-400 mb-2 block">Oraș</label>
+        <input type="text"
+               class="p-inputtext"
+               [(ngModel)]="member.city"
+               placeholder="Ex: București" />
+      </div>
+      <br />
+      <div class="col-6 mb-2">
+        <label class="font-bold text-gray-400 mb-2 block">Țară</label>
+        <input type="text"
+               class="p-inputtext"
+               [(ngModel)]="member.country"
+               placeholder="Ex: România" />
+      </div>
+    </div>
+    <br />
+    <div class="flex justify-content-end mt-5 pt-3 border-top-1 surface-border">
+      <p-button label="Salvează Modificările"
+                icon="pi pi-check"
+                [rounded]="true"
+                (onClick)="updateProfile()">
+      </p-button>
+    </div>
+  </div>
+</p-dialog>
+

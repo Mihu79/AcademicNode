@@ -1,7 +1,15 @@
 <div class="p-4" style="max-width: 800px; margin: 0 auto;">
   <h1 class="mb-4 text-center">Flux Postări</h1>
 
-  <div class="action-bar text-right mb-4">
+  <div class="action-bar text-right mb-4 flex justify-content-end gap-2">
+
+    <p-button *ngIf="currentUser"
+              label="Profilul Meu"
+              icon="pi pi-user"
+            
+              [routerLink]="['/members', currentUser.username]">
+    </p-button>
+    <p> </p>
     <p-button label="Postare Nouă" icon="pi pi-plus" (onClick)="showAddDialog()"></p-button>
   </div>
 
@@ -13,8 +21,20 @@
   </div>
 
   <div *ngFor="let post of posts" class="post-item mb-3">
-    <p-card [header]="post.title"
-            [subheader]="'De: ' + (post.appUser?.userName || 'Anonim')">
+
+    <p-card>
+
+      <ng-template pTemplate="title">
+        {{ post.title }}
+      </ng-template>
+
+      <ng-template pTemplate="subtitle">
+        De:
+        <span [routerLink]="['/members', post.appUser?.userName]"
+              class="author-link">
+          {{ post.appUser?.userName || 'Anonim' }}
+        </span>
+      </ng-template>
 
       <div *ngIf="post.photoUrl" class="mb-3">
         <img [src]="getPhotoUrl(post.photoUrl)"

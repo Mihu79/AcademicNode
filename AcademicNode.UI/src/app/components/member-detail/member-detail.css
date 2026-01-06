@@ -1,0 +1,138 @@
+/* --- CARDURILE DE PROFIL --- */
+:host ::ng-deep .p-card {
+  background: rgba(10, 10, 10, 0.8) !important; /* Fundal inchis semi-transparent */
+  backdrop-filter: blur(10px); /* Efect de sticla */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  color: white;
+  border-radius: 12px;
+}
+
+  /* Titlurile din carduri */
+  :host ::ng-deep .p-card .p-card-title {
+    color: var(--neon-cyan) !important;
+    font-weight: 300;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+/* --- IMAGINEA DE PROFIL --- */
+.profile-image-container {
+  position: relative;
+  display: inline-block;
+  /* DIMENSIUNI FIXE AICI */
+  width: 180px;
+  height: 180px;
+  /* FORMA ROTUNDA AICI */
+  border-radius: 50%;
+  overflow: hidden; /* Orice iese afara e taiat */
+  /* BORDURA SI UMBRA AICI */
+  border: 3px solid var(--neon-cyan);
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+
+.profile-image {
+  /* OMPLE CONTAINERUL */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Se asigura ca poza nu e deformata */
+  display: block; /* Elimina spatiile albe de sub imagini */
+  /* Am scos border-radius, border si box-shadow de aici pentru ca sunt pe container */
+  /* Am scos tranzitia de hover de aici */
+}
+
+  .profile-image:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(0, 242, 255, 0.4);
+  }
+
+/* --- BUTONUL DE EDITARE (USER PROFILE) --- */
+:host ::ng-deep .btn-edit-profile button {
+  background: transparent !important;
+  border: 2px solid var(--neon-purple) !important;
+  color: var(--neon-purple) !important;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+}
+
+  :host ::ng-deep .btn-edit-profile button:hover {
+    background: rgba(188, 19, 254, 0.15) !important;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+    transform: translateY(-2px);
+    color: white !important;
+  }
+
+/* --- POP-UP EDITARE (DIALOG) --- */
+:host ::ng-deep .p-dialog .p-dialog-header {
+  background: #1a1a1a !important;
+  color: var(--neon-cyan);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background: #121212 !important;
+  padding: 2rem !important; /* Spatiere generoasa in interior */
+}
+
+/* Input-urile din dialog */
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep textarea {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  padding: 12px !important;
+  font-size: 1rem;
+  border-radius: 6px;
+}
+
+  :host ::ng-deep .p-inputtext:focus,
+  :host ::ng-deep textarea:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+  }
+
+/* Etichetele (Label) din dialog */
+label {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* --- BUTON UPLOAD POZA (CAMERA) --- */
+.photo-upload-btn {
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  background: var(--neon-cyan);
+  color: black;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+  transition: all 0.3s ease;
+  z-index: 10; /* Sa fie peste poza */
+}
+
+  .photo-upload-btn:hover {
+    transform: scale(1.1);
+    background: white;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
+  }
+
+/* Asiguram ca containerul e relative (deja ai asta, dar verificam) */
+.profile-image-container {
+  position: relative;
+  display: inline-block;
+}
