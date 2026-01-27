@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-// Asigura-te ca aceasta cale este corecta pentru proiectul tau
 import { ApiService } from '../../services/api';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -20,7 +19,12 @@ import { TooltipModule } from 'primeng/tooltip';
 export class FeedComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  posts: any[] = [];
+  // --- MODIFICARE 1: Doua liste in loc de una ---
+  allPosts: any[] = [];      // Lista completa (Backup)
+  visiblePosts: any[] = [];  // Lista care se afiseaza pe ecran
+  searchText: string = '';   // Textul din bara de cautare
+  // ---------------------------------------------
+
   visible: boolean = false;
   isEditMode: boolean = false;
 
@@ -37,25 +41,57 @@ export class FeedComponent implements OnInit {
   baseUrl = 'http://localhost:5160/';
 
   ngOnInit() {
+    // 1. Luam valoarea din memorie
     const userString = localStorage.getItem('user');
-    if (userString) {
-      this.currentUser = JSON.parse(userString);
+
+    // 2. VERIFICARE STRICTA:
+    // Daca exista ceva, DAR nu este textul "undefined" si nici "null"
+    if (userString && userString !== 'undefined' && userString !== 'null') {
+      try {
+        this.currentUser = JSON.parse(userString);
+      } catch (e) {
+        console.error("Date corupte in LocalStorage. Se sterg...");
+        localStorage.removeItem('user');
+        this.currentUser = null;
+      }
+    } else {
+      // Daca e gol sau scrie "undefined", consideram ca nu e logat
+      this.currentUser = null;
     }
+
     this.loadPosts();
   }
-
+  
   loadPosts() {
     this.apiService.getPosts().subscribe({
-      next: (data: any) => this.posts = data,
+      next: (data: any) => {
+        this.allPosts = data;       // Salvam totul in backup
+        this.filterPosts();         // Initializam lista vizibila
+      },
       error: (err: any) => console.error('Eroare incarcare postari:', err)
     });
   }
+
+  filterPosts() {
+    if (!this.searchText || this.searchText.trim() === '') {
+      // Daca nu e scris nimic, aratam tot
+      this.visiblePosts = [...this.allPosts];
+    } else {
+      // Filtram dupa Titlu SAU Nume Autor
+      const term = this.searchText.toLowerCase();
+      this.visiblePosts = this.allPosts.filter(post =>
+        post.title.toLowerCase().includes(term) ||
+        (post.appUser?.userName || '').toLowerCase().includes(term)
+      );
+    }
+  }
+  // ----------------------------------------
 
   showAddDialog() {
     this.isEditMode = false;
     this.postData = { title: '', content: '' };
     this.selectedFile = null;
-    this.previewUrl = null; // Resetam preview-ul
+    this.previewUrl = null;
     this.visible = true;
   }
 
@@ -68,13 +104,10 @@ export class FeedComponent implements OnInit {
     this.visible = true;
   }
 
-  // --- FUNCTIE ACTUALIZATA: Citeste fisierul si face Preview ---
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-
-      // Logica pentru Preview
       const reader = new FileReader();
       reader.onload = () => {
         this.previewUrl = reader.result;
@@ -89,19 +122,15 @@ export class FeedComponent implements OnInit {
       return;
     }
 
-    // --- CONSTRUIM FORMULARUL (FORM DATA) PENTRU AMBELE CAZURI ---
     const formData = new FormData();
     formData.append('title', this.postData.title);
     formData.append('content', this.postData.content);
 
-    // Daca avem fisier selectat, il punem (valabil si la editare daca vrei pe viitor)
     if (this.selectedFile) {
       formData.append('file', this.selectedFile);
     }
-    // -------------------------------------------------------------
 
     if (this.isEditMode) {
-      // EDITARE - Trimitem formData in loc de JSON simplu
       this.apiService.updatePost(this.currentPostId!, formData).subscribe({
         next: () => {
           this.visible = false;
@@ -110,7 +139,6 @@ export class FeedComponent implements OnInit {
         error: (err: any) => alert("Eroare la editare!")
       });
     } else {
-      // CREARE
       this.apiService.createPost(formData).subscribe({
         next: () => {
           this.visible = false;
@@ -136,21 +164,13 @@ export class FeedComponent implements OnInit {
 
   toggleLike(post: any) {
     if (!this.currentUser) return;
-
-    // 1. Verificam daca userul a dat deja like inainte sa trimitem cererea
     const alreadyLiked = this.isLiked(post);
 
     this.apiService.likePost(post.id).subscribe({
       next: () => {
-        // --- AICI E SCHIMBAREA ---
-        // NU mai apelam this.loadPosts();
-
         if (alreadyLiked) {
-          // CAZUL UNLIKE: Scoatem like-ul nostru din lista locala
           post.likes = post.likes.filter((l: any) => l.sourceUserId !== this.currentUser.id);
         } else {
-          // CAZUL LIKE: Adaugam un like "fals" in lista locala ca sa se vada imediat
-          // Verificam sa existe array-ul, daca e null il cream
           if (!post.comments) post.comments = [];
           if (!post.likes) post.likes = [];
 
@@ -159,7 +179,6 @@ export class FeedComponent implements OnInit {
             targetPostId: post.id
           });
         }
-        // -------------------------
       },
       error: () => alert("Eroare like")
     });
@@ -184,13 +203,10 @@ export class FeedComponent implements OnInit {
 
     this.apiService.addComment(post.id, post.newCommentText).subscribe({
       next: (newComment: any) => {
-        // Adaugam comentariul in lista postarii fara sa dam refresh la toata pagina
         if (!post.comments) {
           post.comments = [];
         }
         post.comments.push(newComment);
-
-        // Resetam campul de text
         post.newCommentText = '';
       },
       error: () => alert("Eroare la adăugare comentariu")

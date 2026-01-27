@@ -15,5 +15,10 @@ namespace AcademicNode.API.DTOs
         public string Introduction { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        // Adauga proprietatile astea in MemberDto
+        public ICollection<EducationDto> Educations { get; set; }
+        public ICollection<ExperienceDto> Experiences { get; set; }
+        public ICollection<ProjectDto> Projects { get; set; }
+        public ICollection<CertificationDto> Certifications { get; set; }
     }
 }

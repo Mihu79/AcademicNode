@@ -18,6 +18,11 @@ namespace AcademicNode.API.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<PostLike> Likes { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        // ... in DataContext : DbContext
+        public DbSet<Education> Educations { get; set; }
+        public DbSet<Experience> Experiences { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<Certification> Certifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

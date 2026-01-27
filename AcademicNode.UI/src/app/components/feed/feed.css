@@ -206,3 +206,44 @@ h1 {
     text-shadow: 0 0 5px var(--neon-cyan);
   }
 /* Butonul Profilul Meu - Vizibilitate Maxima */
+/* --- SEARCH BAR MANUAL (FIX SIGUR) --- */
+
+/* 1. Containerul care tine totul la un loc */
+.custom-search-wrapper {
+  position: relative; /* Esential pentru ca iconita sa stea inauntru */
+  width: 100%;
+}
+
+/* 2. Iconita (Lupa) */
+.custom-search-icon {
+  position: absolute; /* O scoatem din flux si o punem peste input */
+  left: 15px; /* Distanta fata de stanga */
+  top: 50%; /* O centram pe verticala */
+  transform: translateY(-50%); /* Ajustare fina pentru centrare perfecta */
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  pointer-events: none; /* Sa poti da click prin ea */
+  z-index: 10; /* Sa fie sigur deasupra */
+}
+
+/* 3. Input-ul */
+.custom-search-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 25px !important; /* Rotunjit */
+  padding-left: 45px !important; /* SPATIU LA STANGA CA SA NU INTRE TEXTUL PESTE LUPA */
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  color: white !important;
+}
+
+  .custom-search-input:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+  }
+
+    /* Cand inputul e focusat, facem si lupa colorata */
+    .custom-search-input:focus + .custom-search-icon,
+    .custom-search-wrapper:focus-within .custom-search-icon {
+      color: var(--neon-cyan);
+    }

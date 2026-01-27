@@ -20,6 +20,12 @@ namespace AcademicNode.API.Entities
 
         public ICollection<Post> Posts { get; set; }
 
+        // ... in interiorul clasei AppUser
+        public ICollection<Education> Educations { get; set; } = new List<Education>();
+        public ICollection<Experience> Experiences { get; set; } = new List<Experience>();
+        public ICollection<Project> Projects { get; set; } = new List<Project>();
+        public ICollection<Certification> Certifications { get; set; } = new List<Certification>();
+
         public DateTime DateOfBirth { get; set; }
         public string KnownAs { get; set; } // Porecla sau Nume de scena
         public DateTime Created { get; set; } = DateTime.Now;

@@ -1,26 +1,35 @@
 <div class="p-4" style="max-width: 800px; margin: 0 auto;">
   <h1 class="mb-4 text-center">Flux Postări</h1>
 
+  <div class="mb-4 custom-search-wrapper">
+    <i class="pi pi-search custom-search-icon"></i>
+
+    <input type="text" pInputText
+           placeholder="Caută după titlu sau autor..."
+           [(ngModel)]="searchText"
+           (ngModelChange)="filterPosts()"
+           class="w-full custom-search-input">
+  </div>
+  <br />
   <div class="action-bar text-right mb-4 flex justify-content-end gap-2">
 
     <p-button *ngIf="currentUser"
               label="Profilul Meu"
               icon="pi pi-user"
-            
               [routerLink]="['/members', currentUser.username]">
     </p-button>
     <p> </p>
     <p-button label="Postare Nouă" icon="pi pi-plus" (onClick)="showAddDialog()"></p-button>
   </div>
 
-  <div *ngIf="posts.length === 0" class="text-center p-5">
+  <div *ngIf="visiblePosts.length === 0" class="text-center p-5">
     <p-card>
       <h3>Nu există postări momentan.</h3>
       <p>Fii tu primul care scrie ceva!</p>
     </p-card>
   </div>
 
-  <div *ngFor="let post of posts" class="post-item mb-3">
+  <div *ngFor="let post of visiblePosts" class="post-item mb-3">
 
     <p-card>
 

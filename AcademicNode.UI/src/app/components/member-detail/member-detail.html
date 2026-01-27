@@ -30,77 +30,261 @@
                       [style]="{'width': '100%'}"
                       (onClick)="showEditDialog()">
             </p-button>
-            <br /> <br />
+            
           </div>
         </div>
-
+        <br />
+        <div class="flex justify-content-between mb-3 px-3">
+          <strong style="color: var(--neon-cyan);">Membru din:</strong>
+          <span class="text-white">{{ member.created | date:'mediumDate' }}</span>
+        </div>
         
-
-        
-         
-          <div class="flex justify-content-between mb-3">
-            <strong style="color: var(--neon-cyan);">Membru din:</strong>
-            <span class="text-white">{{ member.created | date:'mediumDate' }}</span>
-          </div>
-         
-       
       </p-card>
     </div>
 
     <div class="col-12 md:col-8">
-      <p-card header="Despre Mine">
-        <p class="text-gray-300 p-3" style="line-height: 1.8; font-size: 1.05rem; background: rgba(255,255,255,0.03); border-radius: 8px;">
-          {{ member.introduction || 'Acest utilizator nu a adăugat încă o descriere.' }}
-        </p>
+      <p-card>
+        <p-tabs value="0">
+          <p-tablist>
+            <p-tab value="0"><i class="pi pi-user mr-2"></i> Despre</p-tab>
+            <p-tab value="1"><i class="pi pi-briefcase mr-2"></i> Experiență</p-tab>
+            <p-tab value="2"><i class="pi pi-book mr-2"></i> Studii</p-tab>
+            <p-tab value="3"><i class="pi pi-github mr-2"></i> Proiecte</p-tab>
+            <p-tab value="4"><i class="pi pi-verified mr-2"></i> Certificări</p-tab>
+          </p-tablist>
+
+          <p-tabpanels>
+            <p-tabpanel value="0">
+              <p class="text-gray-300 p-3" style="line-height: 1.8; font-size: 1.05rem;">
+                {{ member.introduction || 'Acest utilizator nu a adăugat încă o descriere.' }}
+              </p>
+            </p-tabpanel>
+
+            <p-tabpanel value="1">
+              <div *ngIf="!member.experiences || member.experiences.length === 0" class="text-gray-500 font-italic">Nu a adăugat experiență.</div>
+              <div *ngFor="let exp of member.experiences" class="mb-4 p-3 border-round surface-ground">
+                <h3 class="m-0 text-primary">{{exp.position}}</h3>
+                <div class="text-xl font-bold mb-1">{{exp.company}}</div>
+                <div class="text-sm text-gray-400 mb-2">
+                  {{exp.startDate | date:'MMM yyyy'}} - {{exp.endDate ? (exp.endDate | date:'MMM yyyy') : 'Prezent'}}
+                </div>
+                <p>{{exp.description}}</p>
+              </div>
+            </p-tabpanel>
+
+            <p-tabpanel value="2">
+              <div *ngIf="!member.educations || member.educations.length === 0" class="text-gray-500 font-italic">Nu a adăugat studii.</div>
+              <div *ngFor="let edu of member.educations" class="mb-4 p-3 border-round surface-ground">
+                <h3 class="m-0 text-primary">{{edu.school}}</h3>
+                <div class="font-bold">{{edu.degree}} - {{edu.fieldOfStudy}}</div>
+                <div class="text-sm text-gray-400">
+                  {{edu.startDate | date:'yyyy'}} - {{edu.endDate ? (edu.endDate | date:'yyyy') : 'Prezent'}}
+                </div>
+              </div>
+            </p-tabpanel>
+
+            <p-tabpanel value="3">
+              <div *ngIf="!member.projects || member.projects.length === 0" class="text-gray-500 font-italic">Nu a adăugat proiecte.</div>
+
+              <div *ngFor="let proj of member.projects" class="mb-4 p-3 border-round surface-ground">
+                <div class="flex justify-content-between align-items-center">
+                  <h3 class="m-0 text-primary">{{proj.name}}</h3>
+                  <a [href]="proj.githubLink" target="_blank" class="p-button-text no-underline">
+                    <i class="pi pi-external-link"></i> GitHub
+                  </a>
+                </div>
+                <p>{{proj.description}}</p>
+
+                <div class="text-sm text-gray-400">
+                 
+                  {{ proj.startDate | date:'MMM yyyy' }} -
+                  {{ proj.endDate ? (proj.endDate | date:'MMM yyyy') : 'Prezent' }}
+                </div>
+              </div>
+            </p-tabpanel>
+
+            <p-tabpanel value="4">
+              <div *ngIf="!member.certifications || member.certifications.length === 0" class="text-gray-500 font-italic">Nu a adăugat certificări.</div>
+              <div *ngFor="let cert of member.certifications" class="mb-3 p-3 border-round surface-ground flex align-items-center gap-3">
+                <i class="pi pi-verified text-green-400 text-3xl"></i>
+                <div>
+
+                  <div class="font-bold text-lg">{{cert.name}}</div>
+                  <div class="text-gray-400">{{cert.issuer}} • {{cert.dateIssued | date:'dd MMM yyyy'}}</div>
+                </div>
+              </div>
+            </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
       </p-card>
     </div>
 
   </div>
 </div>
+
 <p-dialog header="Actualizare Profil"
           [(visible)]="editVisible"
           [modal]="true"
-          [style]="{width: '550px'}"
+          [style]="{width: '900px'}"
+          [maximizable]="true"
           [draggable]="false"
           [resizable]="false">
 
-  <div class="flex flex-column gap-4 pt-2" *ngIf="member">
+  <p-tabs value="0">
+    <p-tablist>
+      <p-tab value="0">General</p-tab>
+      <p-tab value="1">Experiență</p-tab>
+      <p-tab value="2">Studii</p-tab>
+      <p-tab value="3">Proiecte</p-tab>
+      <p-tab value="4">Certificări</p-tab>
+    </p-tablist>
 
-    <div class="flex flex-column gap-2">
-      <label class="font-bold text-gray-400">Descriere (Bio)</label>
-      <textarea class="p-inputtext w-full"
-                [(ngModel)]="member.introduction"
-                rows="6"
-                placeholder="Spune ceva despre tine..."
-                style="resize: none; height: 150px;">
-            </textarea>
-    </div>
-    <br />
-    <div class="grid formgrid p-fluid">
-      <div class="col-6 mb-2">
-        <label class="font-bold text-gray-400 mb-2 block">Oraș</label>
-        <input type="text"
-               class="p-inputtext"
-               [(ngModel)]="member.city"
-               placeholder="Ex: București" />
-      </div>
-      <br />
-      <div class="col-6 mb-2">
-        <label class="font-bold text-gray-400 mb-2 block">Țară</label>
-        <input type="text"
-               class="p-inputtext"
-               [(ngModel)]="member.country"
-               placeholder="Ex: România" />
-      </div>
-    </div>
-    <br />
-    <div class="flex justify-content-end mt-5 pt-3 border-top-1 surface-border">
-      <p-button label="Salvează Modificările"
-                icon="pi pi-check"
-                [rounded]="true"
-                (onClick)="updateProfile()">
-      </p-button>
-    </div>
-  </div>
+    <p-tabpanels>
+      <p-tabpanel value="0">
+        <div class="flex flex-column gap-4 pt-2" *ngIf="member">
+          <div class="flex flex-column gap-2">
+            <label class="font-bold text-gray-400">Descriere (Bio)</label>
+            <textarea pTextarea class="w-full" [(ngModel)]="member.introduction" rows="6" style="resize: none;"></textarea>
+          </div>
+          <div class="grid formgrid p-fluid">
+            <div class="col-6 mb-2">
+              <label class="font-bold text-gray-400 mb-2 block">Oraș</label>
+              <input pInputText type="text" [(ngModel)]="member.city" />
+            </div>
+            <div class="col-6 mb-2">
+              <label class="font-bold text-gray-400 mb-2 block">Țară</label>
+              <input pInputText type="text" [(ngModel)]="member.country" />
+            </div>
+          </div>
+          <div class="flex justify-content-end mt-4">
+            <p-button label="Salvează Modificările" icon="pi pi-check" [rounded]="true" (onClick)="updateProfile()"></p-button>
+          </div>
+        </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="1">
+        <div *ngFor="let exp of member?.experiences" class="flex justify-content-between align-items-center p-3 mb-2 surface-ground border-round">
+          <div><span class="font-bold block">{{ exp.position }}</span> <span class="text-sm">{{ exp.company }}</span></div>
+          <div class="flex gap-2">
+            <p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="startEditExperience(exp)"></p-button>
+            <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteExperience(exp.id)"></p-button>
+          </div>
+        </div>
+        <hr class="my-3 border-top-1 surface-border" />
+
+        <h4 class="mt-0" [style.color]="editingExpId ? 'var(--neon-purple)' : 'var(--neon-cyan)'">
+          {{ editingExpId ? 'Editează Experiența' : 'Adaugă Experiență' }}
+        </h4>
+
+        <div class="grid p-fluid">
+          <div class="col-6 mb-2"><input pInputText placeholder="Companie" [(ngModel)]="newExperience.company"></div>
+          <div class="col-6 mb-2"><input pInputText placeholder="Poziție" [(ngModel)]="newExperience.position"></div>
+          <div class="col-12 mb-2"><textarea pTextarea placeholder="Descriere" [(ngModel)]="newExperience.description" rows="2"></textarea></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Început</label> <p-datepicker [(ngModel)]="newExperience.startDate" dateFormat="dd.mm.yy" placeholder=""></p-datepicker></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Sfârșit</label> <p-datepicker [(ngModel)]="newExperience.endDate" dateFormat="dd.mm.yy" [showClear]="true" placeholder=""></p-datepicker></div>
+
+          <div class="col-12 flex gap-2">
+            <p-button [label]="editingExpId ? 'Salvează Modificarea' : 'Adaugă Job'"
+                      [icon]="editingExpId ? 'pi pi-save' : 'pi pi-plus'"
+                      [outlined]="true"
+                      (onClick)="saveExperience()"></p-button>
+
+            <p-button *ngIf="editingExpId" label="Anulează" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="cancelEditExperience()"></p-button>
+          </div>
+        </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="2">
+        <div *ngFor="let edu of member?.educations" class="flex justify-content-between align-items-center p-3 mb-2 surface-ground border-round">
+          <div><span class="font-bold block">{{ edu.school }}</span> <span class="text-sm">{{ edu.degree }}</span></div>
+          <div class="flex gap-2">
+            <p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="startEditEducation(edu)"></p-button>
+            <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteEducation(edu.id)"></p-button>
+          </div>
+        </div>
+        <hr class="my-3 border-top-1 surface-border" />
+
+        <h4 class="mt-0" [style.color]="editingEduId ? 'var(--neon-purple)' : 'var(--neon-cyan)'">
+          {{ editingEduId ? 'Editează Studii' : 'Adaugă Studii' }}
+        </h4>
+
+        <div class="grid p-fluid">
+          <div class="col-12 mb-2"><input pInputText placeholder="Universitate" [(ngModel)]="newEducation.school"></div>
+          <div class="col-6 mb-2"><input pInputText placeholder="Diplomă" [(ngModel)]="newEducation.degree"></div>
+          <div class="col-6 mb-2"><input pInputText placeholder="Domeniu" [(ngModel)]="newEducation.fieldOfStudy"></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Început</label> <p-datepicker [(ngModel)]="newEducation.startDate" dateFormat="dd.mm.yy"></p-datepicker></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Sfârșit</label> <p-datepicker [(ngModel)]="newEducation.endDate" dateFormat="dd.mm.yy" [showClear]="true"></p-datepicker></div>
+
+          <div class="col-12 flex gap-2">
+            <p-button [label]="editingEduId ? 'Salvează Modificarea' : 'Adaugă Studii'"
+                      [icon]="editingEduId ? 'pi pi-save' : 'pi pi-plus'"
+                      [outlined]="true"
+                      (onClick)="saveEducation()"></p-button>
+            <p-button *ngIf="editingEduId" label="Anulează" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="cancelEditEducation()"></p-button>
+          </div>
+        </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="3">
+        <div *ngFor="let proj of member?.projects" class="flex justify-content-between align-items-center p-3 mb-2 surface-ground border-round">
+          <div><span class="font-bold">{{ proj.name }}</span></div>
+          <div class="flex gap-2">
+            <p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="startEditProject(proj)"></p-button>
+            <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteProject(proj.id)"></p-button>
+          </div>
+        </div>
+        <hr class="my-3 border-top-1 surface-border" />
+
+        <h4 class="mt-0" [style.color]="editingProjId ? 'var(--neon-purple)' : 'var(--neon-cyan)'">
+          {{ editingProjId ? 'Editează Proiect' : 'Adaugă Proiect' }}
+        </h4>
+
+        <div class="grid p-fluid">
+          <div class="col-6 mb-2"><input pInputText placeholder="Nume Proiect" [(ngModel)]="newProject.name"></div>
+          <div class="col-6 mb-2"><input pInputText placeholder="Link GitHub" [(ngModel)]="newProject.githubLink"></div>
+          <div class="col-12 mb-2"><textarea pTextarea placeholder="Descriere" [(ngModel)]="newProject.description" rows="2"></textarea></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Început</label> <p-datepicker [(ngModel)]="newProject.startDate" dateFormat="dd.mm.yy"></p-datepicker></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Sfârșit</label> <p-datepicker [(ngModel)]="newProject.endDate" dateFormat="dd.mm.yy" [showClear]="true"></p-datepicker></div>
+
+          <div class="col-12 flex gap-2">
+            <p-button [label]="editingProjId ? 'Salvează Modificarea' : 'Adaugă Proiect'"
+                      [icon]="editingProjId ? 'pi pi-save' : 'pi pi-plus'"
+                      [outlined]="true"
+                      (onClick)="saveProject()"></p-button>
+            <p-button *ngIf="editingProjId" label="Anulează" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="cancelEditProject()"></p-button>
+          </div>
+        </div>
+      </p-tabpanel>
+
+      <p-tabpanel value="4">
+        <div *ngFor="let cert of member?.certifications" class="flex justify-content-between align-items-center p-3 mb-2 surface-ground border-round">
+          <div><span class="font-bold">{{ cert.name }}</span></div>
+          <div class="flex gap-2">
+            <p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="startEditCertification(cert)"></p-button>
+            <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteCertification(cert.id)"></p-button>
+          </div>
+        </div>
+        <hr class="my-3 border-top-1 surface-border" />
+
+        <h4 class="mt-0" [style.color]="editingCertId ? 'var(--neon-purple)' : 'var(--neon-cyan)'">
+          {{ editingCertId ? 'Editează Certificare' : 'Adaugă Certificare' }}
+        </h4>
+
+        <div class="grid p-fluid">
+          <div class="col-12 mb-2"><input pInputText placeholder="Nume" [(ngModel)]="newCertification.name"></div>
+          <div class="col-6 mb-2"><input pInputText placeholder="Emitent" [(ngModel)]="newCertification.issuer"></div>
+          <div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Obținerii</label> <p-datepicker [(ngModel)]="newCertification.dateIssued" dateFormat="dd.mm.yy"></p-datepicker></div>
+
+          <div class="col-12 flex gap-2">
+            <p-button [label]="editingCertId ? 'Salvează Modificarea' : 'Adaugă Certificare'"
+                      [icon]="editingCertId ? 'pi pi-save' : 'pi pi-plus'"
+                      [outlined]="true"
+                      (onClick)="saveCertification()"></p-button>
+            <p-button *ngIf="editingCertId" label="Anulează" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="cancelEditCertification()"></p-button>
+          </div>
+        </div>
+      </p-tabpanel>
+
+    </p-tabpanels>
+  </p-tabs>
 </p-dialog>
-

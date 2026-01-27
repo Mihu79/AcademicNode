@@ -1,120 +1,82 @@
-/* --- CARDURILE DE PROFIL --- */
-:host ::ng-deep .p-card {
-  background: rgba(10, 10, 10, 0.8) !important; /* Fundal inchis semi-transparent */
-  backdrop-filter: blur(10px); /* Efect de sticla */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  color: white;
-  border-radius: 12px;
+/* --- VARIABILE --- */
+:host {
+  --neon-cyan: #06b6d4;
+  --neon-purple: #bc13fe;
 }
 
-  /* Titlurile din carduri */
-  :host ::ng-deep .p-card .p-card-title {
-    color: var(--neon-cyan) !important;
-    font-weight: 300;
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+  /* =========================================================
+   1. CARDURILE DE PROFIL
+   ========================================================= */
+  :host ::ng-deep .p-card {
+    background: rgba(10, 10, 10, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    color: white;
+    border-radius: 12px;
   }
 
-/* --- IMAGINEA DE PROFIL --- */
+    :host ::ng-deep .p-card .p-card-title {
+      color: var(--neon-cyan) !important;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+/* =========================================================
+   2. IMAGINEA DE PROFIL
+   ========================================================= */
+/* =========================================================
+   2. IMAGINEA DE PROFIL (Fix Margine la Zoom)
+   ========================================================= */
 .profile-image-container {
   position: relative;
   display: inline-block;
-  /* DIMENSIUNI FIXE AICI */
   width: 180px;
   height: 180px;
-  /* FORMA ROTUNDA AICI */
   border-radius: 50%;
-  overflow: hidden; /* Orice iese afara e taiat */
-  /* BORDURA SI UMBRA AICI */
-  border: 3px solid var(--neon-cyan);
-  box-shadow: 0 0 25px rgba(0, 242, 255, 0.2);
+  /* FIXUL ESTE AICI: */
+  border: 3px solid var(--neon-cyan); /* Bordura ramane pe container */
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.2); /* Stralucirea initiala */
+  overflow: hidden; /* CRITIC: Orice iese din cerc e taiat, deci bordura ramane deasupra */
   transition: all 0.3s ease;
+  z-index: 1; /* Asigura ca e sub butonul de upload */
 }
 
+  /* EFECTUL DE HOVER: */
+  /* Cand trecem cu mouse-ul pe CONTAINER... */
+  .profile-image-container:hover {
+    /* 1. Intensificam stralucirea ramei */
+    box-shadow: 0 0 40px rgba(0, 242, 255, 0.6);
+    border-color: #99f6e4; /* Optional: deschidem putin culoarea bordurii */
+  }
+
+    /* ... si MARIM IMAGINEA din interior */
+    .profile-image-container:hover .profile-image {
+      transform: scale(1.0); /* Se mareste inauntrul ramei */
+    }
 
 .profile-image {
-  /* OMPLE CONTAINERUL */
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Se asigura ca poza nu e deformata */
-  display: block; /* Elimina spatiile albe de sub imagini */
-  /* Am scos border-radius, border si box-shadow de aici pentru ca sunt pe container */
-  /* Am scos tranzitia de hover de aici */
-}
-
-  .profile-image:hover {
-    transform: scale(1.03);
-    box-shadow: 0 0 35px rgba(0, 242, 255, 0.4);
-  }
-
-/* --- BUTONUL DE EDITARE (USER PROFILE) --- */
-:host ::ng-deep .btn-edit-profile button {
-  background: transparent !important;
-  border: 2px solid var(--neon-purple) !important;
-  color: var(--neon-purple) !important;
-  font-weight: bold;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  margin-top: 15px;
-}
-
-  :host ::ng-deep .btn-edit-profile button:hover {
-    background: rgba(188, 19, 254, 0.15) !important;
-    box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
-    transform: translateY(-2px);
-    color: white !important;
-  }
-
-/* --- POP-UP EDITARE (DIALOG) --- */
-:host ::ng-deep .p-dialog .p-dialog-header {
-  background: #1a1a1a !important;
-  color: var(--neon-cyan);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-:host ::ng-deep .p-dialog .p-dialog-content {
-  background: #121212 !important;
-  padding: 2rem !important; /* Spatiere generoasa in interior */
-}
-
-/* Input-urile din dialog */
-:host ::ng-deep .p-inputtext,
-:host ::ng-deep textarea {
-  background: rgba(255, 255, 255, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  color: white !important;
-  padding: 12px !important;
-  font-size: 1rem;
-  border-radius: 6px;
-}
-
-  :host ::ng-deep .p-inputtext:focus,
-  :host ::ng-deep textarea:focus {
-    border-color: var(--neon-cyan) !important;
-    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
-  }
-
-/* Etichetele (Label) din dialog */
-label {
-  color: #b3b3b3;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 5px;
+  object-fit: cover;
   display: block;
+  /* border-radius nu mai e necesar aici, il ia de la parinte prin overflow hidden */
+  transition: transform 0.5s ease; /* Tranzitie lina pentru zoom */
 }
 
-/* --- BUTON UPLOAD POZA (CAMERA) --- */
+/* --- BUTONUL DE UPLOAD --- */
+/* Trebuie scos putin in afara z-index-ului containerului ca sa nu fie taiat de overflow:hidden */
 .photo-upload-btn {
   position: absolute;
-  bottom: 15px;
-  right: 10px;
+  bottom: 10px;
+  right: 20px;
   background: var(--neon-cyan);
   color: black;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -122,7 +84,7 @@ label {
   cursor: pointer;
   box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
   transition: all 0.3s ease;
-  z-index: 10; /* Sa fie peste poza */
+  z-index: 10; /* Mai sus decat containerul pozei */
 }
 
   .photo-upload-btn:hover {
@@ -131,8 +93,151 @@ label {
     box-shadow: 0 0 25px rgba(255, 255, 255, 0.8);
   }
 
-/* Asiguram ca containerul e relative (deja ai asta, dar verificam) */
-.profile-image-container {
-  position: relative;
-  display: inline-block;
+/* =========================================================
+   3. POP-UP EDITARE (DIALOG)
+   ========================================================= */
+:host ::ng-deep .p-dialog .p-dialog-header {
+  background: #1a1a1a !important;
+  color: var(--neon-cyan);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
 }
+
+:host ::ng-deep .p-dialog .p-dialog-content {
+  background: #121212 !important;
+  padding: 2rem !important;
+}
+
+/* Spatiere intre inputuri */
+:host ::ng-deep .p-dialog .grid .col-6,
+:host ::ng-deep .p-dialog .grid .col-12 {
+  padding-bottom: 1.5rem !important;
+}
+
+/* Input-uri & Textarea */
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep textarea,
+:host ::ng-deep .p-datepicker-input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+  padding: 12px !important;
+  font-size: 1rem;
+  border-radius: 6px;
+  width: 100%;
+  resize: none !important;
+}
+
+  :host ::ng-deep .p-inputtext:focus,
+  :host ::ng-deep textarea:focus {
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+  }
+
+label {
+  color: #b3b3b3;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* =========================================================
+   4. TAB-URILE DIN INTERIORUL DIALOGULUI
+   ========================================================= */
+:host ::ng-deep .p-dialog .p-tablist {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 20px;
+}
+
+:host ::ng-deep .p-dialog .p-tab {
+  background: transparent !important;
+  color: #888 !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border: none;
+  padding: 15px 20px;
+  transition: all 0.3s ease;
+}
+
+  :host ::ng-deep .p-dialog .p-tab:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+  }
+
+:host ::ng-deep .p-dialog .p-tab-active {
+  color: var(--neon-cyan) !important;
+  border-bottom: 2px solid var(--neon-cyan) !important;
+  background: rgba(6, 182, 212, 0.1) !important;
+}
+
+:host ::ng-deep .p-dialog .p-tabpanels {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+:host ::ng-deep .p-datepicker {
+  background: #1a1a1a !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+  :host ::ng-deep .p-datepicker table td > span {
+    color: white;
+  }
+
+/* =========================================================
+   6. BUTONUL PRINCIPAL (SALVEAZA / ADAUGA)
+   IMPORTANT: Am adaugat :not(.p-button-text) si :not(.p-button-secondary)
+   ca sa nu strice butoanele mici (edit/delete/cancel)
+   ========================================================= */
+:host ::ng-deep .p-dialog .p-button:not(.p-button-danger):not(.p-button-text):not(.p-button-secondary) {
+  background-color: var(--neon-cyan) !important;
+  color: black !important;
+  border: 1px solid var(--neon-cyan) !important;
+  font-weight: 800 !important;
+  width: auto;
+}
+
+  :host ::ng-deep .p-dialog .p-button:not(.p-button-danger):not(.p-button-text):not(.p-button-secondary):hover {
+    background-color: white !important;
+    border-color: white !important;
+    color: black !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  }
+
+/* =========================================================
+   7. BUTOANELE MICI DIN LISTE (Creion, Gunoi, Anuleaza)
+   ========================================================= */
+
+/* A. Creionul (Editare) - MOV */
+:host ::ng-deep .p-dialog .p-button-info.p-button-text {
+  color: var(--neon-purple) !important;
+}
+
+  :host ::ng-deep .p-dialog .p-button-info.p-button-text:hover {
+    background: rgba(188, 19, 254, 0.15) !important;
+    box-shadow: 0 0 15px rgba(188, 19, 254, 0.5);
+    transform: scale(1.1);
+  }
+
+/* B. Gunoiul (Stergere) - ROSU */
+:host ::ng-deep .p-dialog .p-button-danger.p-button-text {
+  color: #ff4d4d !important;
+}
+
+  :host ::ng-deep .p-dialog .p-button-danger.p-button-text:hover {
+    background: rgba(255, 77, 77, 0.15) !important;
+    box-shadow: 0 0 15px rgba(255, 77, 77, 0.5);
+    transform: scale(1.1);
+  }
+
+/* C. Butonul ANULEAZA (Text Secundar) - GRI */
+:host ::ng-deep .p-dialog .p-button-secondary.p-button-text {
+  color: #a1a1aa !important;
+  font-weight: bold;
+}
+
+  :host ::ng-deep .p-dialog .p-button-secondary.p-button-text:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+  }
