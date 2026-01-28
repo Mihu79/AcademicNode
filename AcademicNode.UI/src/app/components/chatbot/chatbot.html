@@ -1,0 +1,37 @@
+<div class="chat-trigger" (click)="toggleChat()" [class.hidden]="isOpen">
+  <i class="pi pi-comment" style="font-size: 1.5rem;"></i>
+</div>
+
+<div class="chat-window" *ngIf="isOpen">
+
+  <div class="chat-header">
+    <div class="flex align-items-center gap-2">
+      <i class="pi pi-android text-primary"></i>
+      <span class="font-bold">AI Assistant</span>
+    </div>
+
+    <i class="pi pi-times close-btn" (click)="toggleChat()"></i>
+  </div>
+
+  <div class="chat-body">
+    <div *ngFor="let msg of messages"
+         class="message-bubble"
+         [ngClass]="{'msg-user': msg.sender === 'user', 'msg-bot': msg.sender === 'bot'}">
+      {{ msg.text }}
+    </div>
+
+    <div *ngIf="isTyping" class="message-bubble msg-bot typing-indicator">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <div class="chat-footer flex gap-2">
+    <input type="text" pInputText class="w-full p-inputtext-sm"
+           placeholder="Scrie un mesaj..."
+           [(ngModel)]="userMessage"
+           (keydown.enter)="sendMessage()">
+    <p-button icon="pi pi-send" [rounded]="true" [text]="true" (onClick)="sendMessage()"></p-button>
+  </div>
+</div>

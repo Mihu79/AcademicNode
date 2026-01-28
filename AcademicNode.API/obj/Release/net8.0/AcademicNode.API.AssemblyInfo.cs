@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AcademicNode.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d0e0369f3748fdc50bd890422aec5cbe360fa32a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+95afb0c3612199ab7dec565a8d8ee95b870f3d9b")]
 [assembly: System.Reflection.AssemblyProductAttribute("AcademicNode.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AcademicNode.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

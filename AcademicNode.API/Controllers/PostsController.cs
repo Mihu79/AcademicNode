@@ -153,5 +153,50 @@ namespace AcademicNode.API.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "Liked" });
         }
+
+        [HttpPost("{postId}/comment")]
+        public async Task<ActionResult> AddComment(int postId, CommentDto commentDto)
+        {
+            // 1. Identificam userul logat
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return Unauthorized();
+
+            // 2. Gasim postarea
+            var post = await _context.Posts
+                .Include(p => p.Comments) // Includem comentariile existente
+                .FirstOrDefaultAsync(p => p.Id == postId);
+
+            if (post == null) return NotFound("Postarea nu există");
+
+            // 3. Cream comentariul nou
+            var comment = new Comment
+            {
+                Content = commentDto.Content,
+                AppUserId = userId,
+                PostId = postId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // 4. Adaugam comentariul in lista postarii
+            post.Comments.Add(comment);
+
+            // 5. Salvam in baza de date
+            if (await _context.SaveChangesAsync() > 0)
+            {
+                // Returnam un obiect care arata fix ca ce asteapta Frontend-ul
+                // (ID, Poza userului, Nume user, Text)
+                return Ok(new
+                {
+                    Id = comment.Id,
+                    Content = comment.Content,
+                    Username = user.UserName,
+                    PhotoUrl = user.PhotoUrl,
+                    CreatedAt = comment.CreatedAt
+                });
+            }
+
+            return BadRequest("Eroare la adăugarea comentariului");
+        }
     }
 }

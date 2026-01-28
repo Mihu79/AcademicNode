@@ -2,11 +2,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { MenubarModule } from 'primeng/menubar';
 import { MenuItem } from 'primeng/api';
-
+import { ChatbotComponent } from './components/chatbot/chatbot';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MenubarModule],
+  imports: [RouterOutlet, MenubarModule, ChatbotComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

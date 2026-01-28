@@ -153,4 +153,8 @@ export class ApiService {
   updateCertification(cert: any) {
     return this.http.put(this.baseUrl + '/users/certification', cert, { headers: this.getHeaders() });
   }
+
+  sendMessageToAI(message: string) {
+    return this.http.post<any>(this.baseUrl + '/chat/ask', { message: message });
+  }
 }
