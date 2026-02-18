@@ -1,5 +1,8 @@
 ﻿using AcademicNode.API.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AcademicNode.API.Controllers
 {
@@ -7,120 +10,114 @@ namespace AcademicNode.API.Controllers
     [Route("api/[controller]")]
     public class ChatController : ControllerBase
     {
-        [HttpPost("ask")]
-        public IActionResult AskAI([FromBody] ChatDto chatDto)
+        private readonly IConfiguration _config;
+        private readonly HttpClient _httpClient;
+
+        public ChatController(IConfiguration config)
         {
-            // Curatam mesajul: litere mici + fara spatii inutile la capete
-            var msg = chatDto.Message.ToLower().Trim();
+            _config = config;
+            _httpClient = new HttpClient();
+        }
 
-            string botResponse = "";
-            string actionCode = "";
+        [HttpPost("ask")]
+        public async Task<IActionResult> AskAI([FromBody] ChatDto chatDto)
+        {
+            // 1. Validare API Key
+            var apiKey = _config["Gemini:ApiKey"];
+            if (string.IsNullOrEmpty(apiKey)) return BadRequest("API Key lipsă.");
 
-            // =========================================================
-            // 1. INTRODUCERE & SOCIALIZARE
-            // =========================================================
-            if (msg.Contains("salut") || msg.Contains("buna") || msg.Contains("hello") || msg.Contains("neata"))
-            {
-                botResponse = "Salutare! Sunt AcademiAI 🤖. Cu ce te pot ajuta astăzi?";
-            }
-            else if (msg.Contains("ce faci") || msg.Contains("cf") || msg.Contains("ce mai zici"))
-            {
-                botResponse = "Analizez date și aștept comenzi! Cu ce te pot ajuta?";
-            }
-            else if (msg.Contains("multumesc") || msg.Contains("mersi"))
-            {
-                botResponse = "Cu mare plăcere! Oricând ai nevoie.";
-            }
+            var userMessage = chatDto.Message;
 
-            // =========================================================
-            // 2. DESPRE APLICATIE & NAVIGARE
-            // =========================================================
-            else if (msg.Contains("despre") || msg.Contains("ce e asta") || msg.Contains("aplicatia"))
-            {
-                botResponse = "AcademicNode este rețeaua socială pentru studenți și profesioniști. Poți să-ți faci CV-ul, să postezi și să găsești colegi.";
-            }
-            else if (msg.Contains("acasa") || msg.Contains("home") || msg.Contains("feed"))
-            {
-                botResponse = "Te duc la pagina principală unde poți vedea postările recente.";
-                actionCode = "nav_home";
-            }
-            else if (msg.Contains("nu merge sa postez") || msg.Contains("postez"))
-            {
-                botResponse = "Trebuie sa te autentifici sau sa îți creezi cont și o să poți posta.";
-            }
-            // =========================================================
-            // 3. LEGAT DE PROFIL & CV (Proiecte, Studii, Poza)
-            // =========================================================
-            else if (msg.Contains("experienta") || msg.Contains("job") || msg.Contains("lucru") || msg.Contains("munca"))
-            {
-                botResponse = "Experiența se adaugă din Profil -> Butonul 'Editează Profil'. Te duc acolo acum!";
-                actionCode = "nav_profile";
-            }
-            else if (msg.Contains("proiect") || msg.Contains("github") || msg.Contains("portofoliu"))
-            {
-                botResponse = "Îți poți prezenta proiectele pe profil. Hai să mergem să le vedem/adăugăm.";
-                actionCode = "nav_profile";
-            }
-            else if (msg.Contains("studii") || msg.Contains("educatie") || msg.Contains("facultate") || msg.Contains("scoala"))
-            {
-                botResponse = "Educația este esențială! O poți gestiona din pagina ta de profil.";
-                actionCode = "nav_profile";
-            }
-            else if (msg.Contains("poza") || msg.Contains("avatar") || msg.Contains("imagine"))
-            {
-                botResponse = "Poți să îți schimbi poza de profil apăsând pe butonul albastru de lângă avatarul tău actual.";
-                actionCode = "nav_profile";
-            }
-            else if (msg.Contains("profil") || msg.Contains("cv") || msg.Contains("cont"))
-            {
-                botResponse = "Deschid profilul tău imediat.";
-                actionCode = "nav_profile";
-            }
+            // 2. Prompt-ul "Sistem" integrat
+            // Ii spunem clar sa raspunda JSON si ce actiuni stie sa faca
+            var promptFinal = @$"
+                Ești asistentul virtual al platformei AcademicNode.
+                Răspunde scurt și util în limba română.
+                
+                REGULA CRITICĂ: Răspunde DOAR cu un JSON valid, fără alte explicații sau markdown.
+                Formatul trebuie să fie exact așa:
+                {{ ""response"": ""textul tau aici"", ""action"": ""cod_actiune"" }}
 
-            // =========================================================
-            // 4. SOCIAL & POSTARI
-            // =========================================================
-           
-            else if (msg.Contains("postez") || msg.Contains("scriu") || msg.Contains("postare"))
-            {
-                botResponse = "Poți crea o postare nouă direct de pe pagina principală (Feed).";
-                actionCode = "nav_home";
-            }
-          
+                Coduri acțiune disponibile (folosește-le doar când userul cere navigare):
+                - 'nav_profile' (pentru profil, cv, experiență, studii)
+                - 'nav_home' (pentru acasă, feed, postări)
+                - 'nav_members' (pentru membri, colegi, căutare oameni)
+                - 'nav_messages' (pentru chat, mesaje private)
+                - '' (lasă gol dacă e doar o discuție normală)
 
-            // =========================================================
-            // 5. TEHNIC & FUN (Easter Eggs)
-            // =========================================================
-            else if (msg.Contains("gluma") || msg.Contains("vic") || msg.Contains("rade"))
-            {
-                botResponse = "De ce programatorii preferă întunericul? Pentru că lumina atrage bug-uri! 😂";
-            }
-            else if (msg.Contains("ha") || msg.Contains("buna gluma"))
-            {
-                botResponse = "Mă bucur ca ți-a plăcut gluma 😁";
-            }
-            else if (msg.Contains("logout") || msg.Contains("iesire") || msg.Contains("delogare"))
-            {
-                botResponse = "Butonul de Logout se află în meniul de sus, în dreapta. Te aștept înapoi!";
-            }
-            else if (msg.Contains("bug") || msg.Contains("eroare") || msg.Contains("nu merge"))
-            {
-                botResponse = "Îmi pare rău! 😭 Te rog să contactezi administratorul la mazilumihai79@gmailcom.";
-            }
-            else if (msg.Contains("creat") || msg.Contains("cine te-a facut"))
-            {
-                botResponse = "Am fost creat de un dezvoltator priceput pe nume Mazilu Mihai 😎";
-            }
+                User: {userMessage}
+            ";
 
-            // =========================================================
-            // 6. DEFAULT (Nu a inteles)
-            // =========================================================
-            else
-            {
-                botResponse = "Hmm, nu sunt sigur. Încearcă să mă întrebi de 'profil', 'colegi', 'proiecte' sau cere-mi o 'glumă'!";
-            }
+            // 3. URL-UL CORECT DIN LISTA TA (Gemini 2.5 Flash)
+            var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={apiKey}";
 
-            return Ok(new { response = botResponse, action = actionCode });
+            var requestBody = new
+            {
+                contents = new[]
+                {
+                    new { parts = new[] { new { text = promptFinal } } }
+                }
+            };
+
+            var jsonContent = new StringContent(JsonSerializer.Serialize(requestBody), Encoding.UTF8, "application/json");
+
+            try
+            {
+                // 4. Apelam Google
+                var response = await _httpClient.PostAsync(url, jsonContent);
+                var responseString = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // Daca totusi crapa, vedem eroarea in consola
+                    Console.WriteLine($"[DEBUG] EROARE: {responseString}");
+                    return StatusCode((int)response.StatusCode, "Google Error");
+                }
+
+                // 5. Parsam raspunsul
+                using var doc = JsonDocument.Parse(responseString);
+                var candidates = doc.RootElement.GetProperty("candidates");
+
+                if (candidates.GetArrayLength() == 0) return Ok(new { response = "Nu am înțeles.", action = "" });
+
+                var textResponse = candidates[0]
+                    .GetProperty("content")
+                    .GetProperty("parts")[0]
+                    .GetProperty("text")
+                    .GetString();
+
+                // 6. Curatenie (stergem ```json daca apare)
+                textResponse = textResponse
+                    .Replace("```json", "")
+                    .Replace("```", "")
+                    .Trim();
+
+                // 7. Returnam JSON catre Frontend
+                try
+                {
+                    var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                    var aiResult = JsonSerializer.Deserialize<AIResponse>(textResponse, options);
+                    return Ok(aiResult);
+                }
+                catch
+                {
+                    // Fallback: daca AI-ul a gresit JSON-ul, trimitem textul brut
+                    return Ok(new { response = textResponse, action = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Eroare interna: " + ex.Message);
+            }
+        }
+
+        public class AIResponse
+        {
+            [JsonPropertyName("response")]
+            public string Response { get; set; }
+
+            [JsonPropertyName("action")]
+            public string Action { get; set; }
         }
     }
 }

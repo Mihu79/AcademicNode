@@ -1,11 +1,16 @@
 {
   "ExpandedNodes": [
     "",
+    "\\AcademicNode.API",
+    "\\AcademicNode.API\\Controllers",
+    "\\AcademicNode.UI",
     "\\AcademicNode.UI\\src",
     "\\AcademicNode.UI\\src\\app",
     "\\AcademicNode.UI\\src\\app\\components",
-    "\\AcademicNode.UI\\src\\app\\components\\chatbot"
+    "\\AcademicNode.UI\\src\\app\\components\\chatbot",
+    "\\AcademicNode.UI\\src\\app\\models",
+    "\\AcademicNode.UI\\src\\app\\services"
   ],
-  "SelectedNode": "\\AcademicNode.UI",
+  "SelectedNode": "\\AcademicNode.API\\Program.cs",
   "PreviewInSolutionExplorer": false
 }
