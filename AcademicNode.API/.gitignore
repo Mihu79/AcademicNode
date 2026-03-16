@@ -1,0 +1,7 @@
+# Ignora setarile secrete
+appsettings.json
+appsettings.Development.json
+
+# Ignora folderul de build (gunoi)
+bin/
+obj/

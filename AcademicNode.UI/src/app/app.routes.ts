@@ -4,15 +4,18 @@ import { LoginComponent } from './components/login/login';
 import { RegisterComponent } from './components/register/register';
 import { MemberDetailComponent } from './components/member-detail/member-detail';
 
+// 1. IMPORTĂ COMPONENTA DE ADMIN (Verifică să fie calea corectă către fișierul tău)
+import { AdminPanelComponent } from './components/admin-panel/admin-panel';
+
 export const routes: Routes = [
- 
   { path: '', component: FeedComponent },
-  
   { path: 'login', component: LoginComponent },
-  
   { path: 'register', component: RegisterComponent },
-  
   { path: 'members/:username', component: MemberDetailComponent },
 
+  // 2. ADAUGĂ RUTA PENTRU ADMIN AICI:
+  { path: 'admin', component: AdminPanelComponent },
+
+  // Ruta wildcard '**' RĂMÂNE OBLIGATORIU ULTIMA!
   { path: '**', redirectTo: '' }
 ];

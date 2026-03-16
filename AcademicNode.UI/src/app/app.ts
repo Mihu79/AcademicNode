@@ -30,23 +30,53 @@ export class App implements OnInit {
   }
 
   updateMenu() {
-    // Verificam daca exista user in memorie
-    const isLoggedIn = localStorage.getItem('user') !== null;
+    const userString = localStorage.getItem('user');
+    const isLoggedIn = userString !== null;
 
     if (isLoggedIn) {
-      // --- MENU PENTRU UTILIZATOR LOGAT ---
-      this.items = [
+      const user = JSON.parse(userString);
+
+      // 1. EXTRAGEM ROLUL DIRECT DIN TOKEN (Asta garanteaza ca merge)
+      let isAdmin = false;
+      if (user.token) {
+        // Spargem token-ul si citim partea din mijloc (payload-ul)
+        const payload = JSON.parse(atob(user.token.split('.')[1]));
+        const roles = payload.role; // In JWT-ul de C#, rolurile sunt mereu in "role"
+
+        if (roles) {
+          // Daca are un singur rol e string, daca are mai multe e array. Il facem mereu array.
+          const rolesArray = Array.isArray(roles) ? roles : [roles];
+          isAdmin = rolesArray.includes('Admin');
+        }
+      }
+
+      // 2. Cream lista de baza (ce vede orice utilizator logat)
+      const loggedInItems: MenuItem[] = [
         {
           label: 'Acasă (Feed)',
           icon: 'pi pi-home',
           command: () => this.router.navigate(['/'])
-        },
-        {
-          label: 'Ieșire Cont',
-          icon: 'pi pi-sign-out',
-          command: () => this.logout()
         }
       ];
+
+      // 3. ADAUGAM BUTONUL DE ADMIN DOAR DACA ARE ROLUL
+      if (isAdmin) {
+        loggedInItems.push({
+          label: 'Panou Admin',
+          icon: 'pi pi-shield',
+          command: () => this.router.navigate(['/admin'])
+        });
+      }
+
+      // 4. Punem butonul de Logout la final
+      loggedInItems.push({
+        label: 'Ieșire Cont',
+        icon: 'pi pi-sign-out',
+        command: () => this.logout()
+      });
+
+      this.items = loggedInItems;
+
     } else {
       // --- MENU PENTRU VIZITATOR (NELOGAT) ---
       this.items = [

@@ -43,11 +43,13 @@ namespace AcademicNode.API.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors);
 
+            await _userManager.AddToRoleAsync(user, "Normal");
+
             // Returnam un DTO cu token, nu userul intreg
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateTokenAsync(user),
                 Id = user.Id
             };
         }
@@ -67,7 +69,7 @@ namespace AcademicNode.API.Controllers
             return new UserDto
             {
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateTokenAsync(user),
                 Id = user.Id
             };
         }

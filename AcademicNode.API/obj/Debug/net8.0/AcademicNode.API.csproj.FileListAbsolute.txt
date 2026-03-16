@@ -141,3 +141,9 @@ C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\obj\Debug\net8.0\s
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\AcademicNode.API.staticwebassets.runtime.json
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\web.config
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\AcademicNode.API.deps.json
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\AcademicNode.API.runtimeconfig.json
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\AcademicNode.API.staticwebassets.endpoints.json
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\appsettings.Development.json
+C:\Users\mazil\OneDrive\Desktop\AcademicNode\AcademicNode.API\bin\Debug\net8.0\publish\appsettings.json

@@ -1,9 +1,10 @@
 using AcademicNode.API.Entities;
+using System.Threading.Tasks;
 
 namespace AcademicNode.API.Interfaces
 {
     public interface ITokenService
     {
-        string CreateToken(AppUser user);
+        Task<string> CreateTokenAsync(AppUser user);
     }
 }

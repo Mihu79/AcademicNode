@@ -7,7 +7,9 @@ namespace AcademicNode.API.Data
 {
     // Aceasta este linia magică ce rezolvă eroarea CS0311
     // Îi spunem: Userul e AppUser, Rolul e AppRole, și Cheia e int
-    public class DataContext : IdentityDbContext<AppUser, AppRole, int>
+    public class DataContext : IdentityDbContext<AppUser, AppRole, int,
+     IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>,
+     IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
