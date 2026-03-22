@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api';
 import { Member } from '../../models/member';
 import { FormsModule } from '@angular/forms';
@@ -28,6 +28,7 @@ export class MemberDetailComponent implements OnInit {
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
 
   editVisible: boolean = false;
   member: Member | undefined;
@@ -66,7 +67,15 @@ export class MemberDetailComponent implements OnInit {
         }
         this.cdr.detectChanges();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        // --- MODIFICARE: Interceptam eroarea 403 Forbidden ---
+        if (err.status === 403) {
+          alert("🛡️ Acces Interzis! Conturile cu rolul 'Normal' nu au acces la profiluri.");
+          this.router.navigate(['/']); // Il dam afara inapoi in pagina principala (feed)
+        } else {
+          console.error("Eroare la incarcarea membrului:", err);
+        }
+      }
     })
   }
 

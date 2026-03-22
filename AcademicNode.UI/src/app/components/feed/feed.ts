@@ -19,54 +19,90 @@ import { TooltipModule } from 'primeng/tooltip';
 export class FeedComponent implements OnInit {
   private apiService = inject(ApiService);
 
-  // --- MODIFICARE 1: Doua liste in loc de una ---
-  allPosts: any[] = [];      // Lista completa (Backup)
-  visiblePosts: any[] = [];  // Lista care se afiseaza pe ecran
-  searchText: string = '';   // Textul din bara de cautare
-  // ---------------------------------------------
+  allPosts: any[] = [];
+  visiblePosts: any[] = [];
+  searchText: string = '';
 
   visible: boolean = false;
   isEditMode: boolean = false;
 
-  // Variabile pentru Editare/Creare
   currentPostId: number | null = null;
   currentUser: any = null;
   postData: any = { title: '', content: '' };
 
-  // --- VARIABILE PENTRU FISIER SI PREVIEW ---
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
+  isPdfSelected: boolean = false; // ADAUGAT: Pt a sti daca aratam iconita de PDF sau imaginea in preview
+  requestDialogVisible: boolean = false;
+  requestData: any = { requestedRole: 'Student', message: '' };
 
-  // URL-ul de baza pentru poze (Backend)
   baseUrl = 'http://localhost:5160/';
 
+  // ADAUGAT: Pentru a pastra rolurile userului logat usor de accesat
+  userRoles: string[] = [];
+
   ngOnInit() {
-    // 1. Luam valoarea din memorie
     const userString = localStorage.getItem('user');
 
-    // 2. VERIFICARE STRICTA:
-    // Daca exista ceva, DAR nu este textul "undefined" si nici "null"
     if (userString && userString !== 'undefined' && userString !== 'null') {
       try {
         this.currentUser = JSON.parse(userString);
+
+        // --- ADAUGAT: Extragem rolurile din Token pentru a le folosi la permisiuni ---
+        if (this.currentUser.token) {
+          const payload = JSON.parse(atob(this.currentUser.token.split('.')[1]));
+          const roles = payload.role;
+          this.userRoles = Array.isArray(roles) ? roles : (roles ? [roles] : []);
+        }
       } catch (e) {
         console.error("Date corupte in LocalStorage. Se sterg...");
         localStorage.removeItem('user');
         this.currentUser = null;
       }
     } else {
-      // Daca e gol sau scrie "undefined", consideram ca nu e logat
       this.currentUser = null;
     }
 
     this.loadPosts();
   }
-  
+
+  // --- NOU: Verifica daca are voie sa posteze (Ascunde butonul pt "Normal") ---
+  canPost(): boolean {
+    if (!this.currentUser) return false;
+    // Daca are rolul 'Normal', NU are voie sa posteze
+    if (this.userRoles.includes('Normal')) return false;
+    return true;
+  }
+
+  // --- NOU: Verifica daca are voie sa stearga/editeze (Autor SAU Admin) ---
+  canEditOrDelete(post: any): boolean {
+    if (!this.currentUser) return false;
+    const isAuthor = this.currentUser.id === post.appUserId;
+    const isAdmin = this.userRoles.includes('Admin');
+    return isAuthor || isAdmin;
+  }
+
+  // --- MODIFICAT: Construim calea pentru fisier (PDF sau Poza) ---
+  getFileUrl(path: string): string {
+    if (!path) return '';
+    // Asiguram ca path-ul are / in fata
+    const formattedPath = path.startsWith('/') ? path : '/' + path;
+    return this.baseUrl + formattedPath.replace(/\\/g, '/');
+  }
+
+  // Se pastreaza pentru imaginile vechi/standard
+  getPhotoUrl(path: string): string {
+    if (!path) return '';
+    const formattedPath = path.startsWith('/') ? path : '/' + path;
+    return this.baseUrl + formattedPath.replace(/\\/g, '/');
+  }
+
   loadPosts() {
+    // In TS ul tau initial asta trebuia pus aici in OnInit, dar era sus. L-am mutat corect.
     this.apiService.getPosts().subscribe({
       next: (data: any) => {
-        this.allPosts = data;       // Salvam totul in backup
-        this.filterPosts();         // Initializam lista vizibila
+        this.allPosts = data;
+        this.filterPosts();
       },
       error: (err: any) => console.error('Eroare incarcare postari:', err)
     });
@@ -74,24 +110,22 @@ export class FeedComponent implements OnInit {
 
   filterPosts() {
     if (!this.searchText || this.searchText.trim() === '') {
-      // Daca nu e scris nimic, aratam tot
       this.visiblePosts = [...this.allPosts];
     } else {
-      // Filtram dupa Titlu SAU Nume Autor
       const term = this.searchText.toLowerCase();
       this.visiblePosts = this.allPosts.filter(post =>
-        post.title.toLowerCase().includes(term) ||
+        post.title?.toLowerCase().includes(term) ||
         (post.appUser?.userName || '').toLowerCase().includes(term)
       );
     }
   }
-  // ----------------------------------------
 
   showAddDialog() {
     this.isEditMode = false;
     this.postData = { title: '', content: '' };
     this.selectedFile = null;
     this.previewUrl = null;
+    this.isPdfSelected = false;
     this.visible = true;
   }
 
@@ -101,6 +135,7 @@ export class FeedComponent implements OnInit {
     this.postData = { title: post.title, content: post.content };
     this.selectedFile = null;
     this.previewUrl = null;
+    this.isPdfSelected = false;
     this.visible = true;
   }
 
@@ -108,11 +143,20 @@ export class FeedComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.previewUrl = reader.result;
-      };
-      reader.readAsDataURL(file);
+
+      // Verificam daca e PDF
+      this.isPdfSelected = file.type === 'application/pdf';
+
+      // Daca NU e PDF, afisam imaginea. Daca E pdf, nu incercam sa afisam un render de imagine.
+      if (!this.isPdfSelected) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.previewUrl = reader.result;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.previewUrl = null; // Stergem preview-ul de imagine
+      }
     }
   }
 
@@ -127,14 +171,14 @@ export class FeedComponent implements OnInit {
     formData.append('content', this.postData.content);
 
     if (this.selectedFile) {
-      formData.append('file', this.selectedFile);
+      formData.append('file', this.selectedFile); // Asta ramane la fel si pt PDF si pt Poza
     }
 
     if (this.isEditMode) {
       this.apiService.updatePost(this.currentPostId!, formData).subscribe({
         next: () => {
           this.visible = false;
-          this.loadPosts();
+          this.loadPosts(); // Reincarcam direct din backend
         },
         error: (err: any) => alert("Eroare la editare!")
       });
@@ -142,7 +186,7 @@ export class FeedComponent implements OnInit {
       this.apiService.createPost(formData).subscribe({
         next: () => {
           this.visible = false;
-          this.loadPosts();
+          this.loadPosts(); // Reincarcam sa vedem PDF-ul nou
         },
         error: (err: any) => {
           console.error(err);
@@ -150,11 +194,6 @@ export class FeedComponent implements OnInit {
         }
       });
     }
-  }
-
-  getPhotoUrl(path: string): string {
-    if (!path) return '';
-    return this.baseUrl + path.replace(/\\/g, '/');
   }
 
   isLiked(post: any): boolean {
@@ -185,7 +224,7 @@ export class FeedComponent implements OnInit {
   }
 
   deletePost(id: number) {
-    if (confirm("Sigur ștergi?")) {
+    if (confirm("Sigur ștergi? (Adminul șterge orice!)")) {
       this.apiService.deletePost(id).subscribe({
         next: () => this.loadPosts(),
         error: () => alert("Eroare ștergere")
@@ -203,13 +242,54 @@ export class FeedComponent implements OnInit {
 
     this.apiService.addComment(post.id, post.newCommentText).subscribe({
       next: (newComment: any) => {
-        if (!post.comments) {
-          post.comments = [];
-        }
+        if (!post.comments) post.comments = [];
         post.comments.push(newComment);
         post.newCommentText = '';
       },
       error: () => alert("Eroare la adăugare comentariu")
     });
+  }
+
+  // Verifica daca userul curent e Student, Profesor sau Admin (Are voie sa interactioneze)
+  canInteract(): boolean {
+    if (!this.currentUser) return false;
+    // Daca are unul din aceste roluri, ii afisam butoanele de Like, Comment si Profil
+    return this.userRoles.includes('Student') ||
+      this.userRoles.includes('Professor') ||
+      this.userRoles.includes('Admin');
+  }
+
+  // Verifica daca autorul postarii este Profesor
+  isProfessor(post: any): boolean {
+    if (!post.appUser || !post.appUser.userRoles) return false;
+    // Cautam in lista de roluri a celui care a creat postarea
+    return post.appUser.userRoles.some((ur: any) => ur.role?.name === 'Professor');
+  }
+
+  showRequestDialog() {
+    this.requestData = { requestedRole: 'Student', message: '' };
+    this.requestDialogVisible = true;
+  }
+
+  submitRoleRequest() {
+    if (!this.requestData.message || this.requestData.message.trim() === '') {
+      alert("Te rog să adaugi un scurt mesaj justificativ (ex: grupa ta)!");
+      return;
+    }
+
+    this.apiService.requestRole(this.requestData).subscribe({
+      next: (res: any) => {
+        alert(res.message || "Cererea a fost trimisă cu succes!");
+        this.requestDialogVisible = false;
+      },
+      error: (err: any) => {
+        // Afisam eroarea din backend (ex: "Ai deja o cerere in asteptare")
+        alert(err.error || "Eroare la trimiterea cererii.");
+      }
+    });
+  }
+  isNormalUser(): boolean {
+    if (!this.currentUser) return false;
+    return this.userRoles.includes('Normal');
   }
 }

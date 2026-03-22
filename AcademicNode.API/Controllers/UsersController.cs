@@ -36,6 +36,7 @@ namespace AcademicNode.API.Controllers
 
         // GET: api/users/mihu
         // Cautam dupa USERNAME, nu dupa ID (e mai frumos in URL)
+        [Authorize(Roles = "Admin, Professor, Student")]
         [HttpGet("{username}")]
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {

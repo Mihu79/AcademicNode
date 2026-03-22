@@ -247,3 +247,164 @@ h1 {
     .custom-search-wrapper:focus-within .custom-search-icon {
       color: var(--neon-cyan);
     }
+
+/* --- STILIZARE PDF UPLOAD & DISPLAY --- */
+
+/* Cutia cu preview-ul PDF din Feed si din Modal */
+.pdf-display-box {
+  background-color: rgba(0, 242, 255, 0.05) !important;
+  border: 1px dashed var(--neon-cyan) !important;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+  .pdf-display-box:hover {
+    background-color: rgba(0, 242, 255, 0.1) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+  }
+
+/* Iconita de PDF - O facem un Rosu/Roz Neon sa iasa in evidenta pe fundalul dark */
+.pdf-icon {
+  font-size: 3rem;
+  color: #ff4757 !important;
+  text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+  margin-bottom: 15px;
+}
+
+/* Butonul de Download PDF */
+.btn-download-pdf {
+  background: transparent !important;
+  border: 1px solid var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+  .btn-download-pdf:hover {
+    background: var(--neon-cyan) !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px var(--neon-cyan);
+    transform: scale(1.05);
+  }
+/* --- STILIZARE POSTARE PROFESOR (STAFF ACADEMIC) --- */
+
+/* Schimbam bordura si adaugam o tenta aurie cardului */
+::ng-deep .official-professor-card.p-card {
+  border: 1px solid #ffc107 !important;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.1) !important;
+  background: linear-gradient(145deg, #1a1a1a, #1f1b0d) !important;
+}
+
+  ::ng-deep .official-professor-card.p-card:hover {
+    border-color: #ffca28 !important;
+    box-shadow: 0 10px 40px -10px rgba(255, 193, 7, 0.25) !important;
+    transform: translateY(-5px);
+  }
+
+/* Eticheta 'OFFICIAL' in sine */
+.official-badge {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: 1px solid #ffc107;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+  text-transform: uppercase;
+}
+
+/* Schimbam culoarea titlului pt postarile profesorilor */
+::ng-deep .official-professor-card .p-card-title {
+  color: #ffc107 !important;
+}
+/* --- MESAJ RESTRICTIE ROL NORMAL (VERDE NEON) --- */
+.role-restriction-msg {
+  background: rgba(0, 255, 136, 0.05); /* Fundal verde foarte transparent */
+  border: 1px solid rgba(0, 255, 136, 0.2);
+  border-left: 4px solid #00ff88; /* Dunga solida de accent in stanga */
+  border-radius: 6px;
+  padding: 12px 15px;
+  margin-top: 20px;
+  color: #00ff88;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.1);
+  transition: all 0.3s ease;
+}
+
+  .role-restriction-msg:hover {
+    background: rgba(0, 255, 136, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+  }
+
+  .role-restriction-msg i {
+    font-size: 1.3rem;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+  }
+/* --- BUTONUL DE SOLICITARE ROL --- */
+.btn-request-role {
+  background: linear-gradient(45deg, #8a2be2, #d500f9) !important; /* Gradient mov-roz */
+  border: none !important;
+  box-shadow: 0 0 10px rgba(213, 0, 249, 0.4) !important;
+  transition: all 0.3s ease !important;
+  font-weight: bold !important;
+}
+
+  .btn-request-role:hover {
+    box-shadow: 0 0 20px rgba(213, 0, 249, 0.8) !important;
+    transform: translateY(-2px);
+  }
+
+/* --- FORMULARUL DE SOLICITARE (Select si Textarea) --- */
+.custom-request-input {
+  background-color: #1e1e2f !important; /* Fundal inchis */
+  color: #00ff88 !important; /* Text neon verde */
+  border: 1px solid #3a3a4f !important;
+  border-radius: 6px;
+  padding: 12px;
+  width: 100%;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+  .custom-request-input:focus {
+    outline: none;
+    border-color: #00ff88 !important;
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.3) !important;
+  }
+
+  /* Optiunile din dropdown */
+  .custom-request-input option {
+    background-color: #1e1e2f;
+    color: white;
+  }
+/* --- LINK NUME AUTOR COMENTARIU --- */
+.comment-author-link {
+  color: var(--neon-cyan, #00ff88); /* Foloseste verdele neon sau cyan-ul tau */
+  font-weight: bold;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+  .comment-author-link:hover {
+    
+    text-shadow: 0 0 8px var(--neon-cyan, #00ff88); /* Efect de stralucire la hover */
+  }

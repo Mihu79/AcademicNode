@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\AcademicNode.UI\\src",
+    "\\AcademicNode.UI\\src\\app",
+    "\\AcademicNode.UI\\src\\app\\components",
+    "\\AcademicNode.UI\\src\\app\\components\\admin-panel",
+    "\\AcademicNode.UI\\src\\app\\components\\feed",
+    "\\AcademicNode.UI\\src\\app\\components\\member-detail",
     "\\AcademicNode.UI\\src\\app\\services"
   ],
   "SelectedNode": "\\AcademicNode.API",

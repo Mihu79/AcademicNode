@@ -157,4 +157,42 @@ export class ApiService {
   sendMessageToAI(message: string) {
     return this.http.post<any>(this.baseUrl + '/chat/ask', { message: message });
   }
+
+  requestRole(data: any) {
+    // 1. Luam userul din memorie
+    const userString = localStorage.getItem('user');
+    let headers = new HttpHeaders();
+
+    // 2. Daca exista, ii atasam Token-ul in header
+    if (userString) {
+      const user = JSON.parse(userString);
+      headers = headers.set('Authorization', 'Bearer ' + user.token);
+    }
+
+    // 3. Trimitem cererea + token-ul
+    return this.http.post(this.baseUrl + '/rolerequests', data, { headers: headers });
+  }
+
+  // Helper mic pentru a lua token-ul mereu (ca sa nu scriem de 3 ori acelasi cod)
+  private getAuthHeaders() {
+    const userString = localStorage.getItem('user');
+    let headers = new HttpHeaders();
+    if (userString) {
+      const user = JSON.parse(userString);
+      headers = headers.set('Authorization', 'Bearer ' + user.token);
+    }
+    return { headers: headers };
+  }
+
+  getPendingRequests() {
+    return this.http.get(this.baseUrl + '/rolerequests/pending', this.getAuthHeaders());
+  }
+
+  approveRoleRequest(id: number) {
+    return this.http.post(this.baseUrl + `/rolerequests/${id}/approve`, {}, this.getAuthHeaders());
+  }
+
+  rejectRoleRequest(id: number) {
+    return this.http.post(this.baseUrl + `/rolerequests/${id}/reject`, {}, this.getAuthHeaders());
+  }
 }

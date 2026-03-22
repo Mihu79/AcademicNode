@@ -25,6 +25,8 @@ namespace AcademicNode.API.Controllers
         {
             return await _context.Posts
                 .Include(p => p.AppUser)
+                .ThenInclude(u => u.UserRoles) 
+                .ThenInclude(ur => ur.Role)
                 .Include(p => p.Likes)
                 .Include(p => p.Comments)
                     .ThenInclude(c => c.AppUser)
@@ -34,7 +36,6 @@ namespace AcademicNode.API.Controllers
         }
 
         [HttpPost]
-        // [FromForm] este CRITIC! Ii spune serverului sa nu astepte JSON, ci date de formular
         public async Task<ActionResult<Post>> CreatePost([FromForm] PostDto postDto)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -47,69 +48,44 @@ namespace AcademicNode.API.Controllers
                 Title = postDto.Title,
                 Content = postDto.Content,
                 AppUserId = userId,
-                AppUser = appUser
+                AppUser = appUser,
+                CreatedAt = DateTime.UtcNow // Adaugat pentru siguranta
             };
 
-            // --- LOGICA PENTRU POZA ---
+            // --- LOGICA PENTRU FISIER (POZA SAU PDF) ---
             if (postDto.File != null && postDto.File.Length > 0)
             {
-                // 1. Generam un nume unic fisierului (ca sa nu se suprascrie daca doi useri pun "poza.jpg")
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(postDto.File.FileName);
 
-                // 2. Calea unde salvam: folderul wwwroot/uploads
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                // Verificam daca e PDF sau Imagine pentru a alege folderul corect
+                bool isPdf = postDto.File.ContentType == "application/pdf";
+                var folderName = isPdf ? "files" : "uploads";
 
-                // Cream folderul daca nu exista
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
+                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderName);
+
+                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
                 var filePath = Path.Combine(folderPath, fileName);
 
-                // 3. Copiem fisierul fizic pe hard disk
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await postDto.File.CopyToAsync(stream);
                 }
 
-                // 4. Salvam URL-ul in baza de date (calea relativa)
-                // Accesibil la http://localhost:5160/uploads/nume_poza.jpg
-                post.PhotoUrl = "uploads/" + fileName;
+                // Salvam in baza de date in functie de tip
+                if (isPdf)
+                {
+                    post.FileUrl = folderName + "/" + fileName;
+                    post.IsPdf = true;
+                }
+                else
+                {
+                    post.PhotoUrl = folderName + "/" + fileName;
+                    post.IsPdf = false;
+                }
             }
-            // --------------------------
 
             _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
-
-            return Ok(post);
-        }
-
-        [HttpPut("{id}")]
-        // --- AM ADAUGAT [FromForm] AICI ---
-        public async Task<ActionResult> UpdatePost(int id, [FromForm] PostDto postDto)
-        {
-            var post = await _context.Posts.FindAsync(id);
-
-            if (post == null) return NotFound("Postarea nu există");
-
-            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            if (post.AppUserId != currentUserId)
-            {
-                return Unauthorized("Nu poți edita postarea altcuiva!");
-            }
-
-            // Actualizam datele
-            post.Title = postDto.Title;
-            post.Content = postDto.Content;
-
-            // Optional: Daca vrei sa permiti si schimbarea pozei la editare in viitor:
-            /*
-            if(postDto.File != null) {
-                // Logica de salvare poza...
-            }
-            */
-
             await _context.SaveChangesAsync();
 
             return Ok(post);
@@ -121,35 +97,98 @@ namespace AcademicNode.API.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post == null) return NotFound();
 
-            // Verificam daca e postarea mea
             var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            if (post.AppUserId != currentUserId) return Unauthorized("Nu poti sterge postarea altcuiva!");
+
+            // --- LOGICA DE ADMIN: Poate sterge orice ---
+            // Verificam daca userul are claim-ul de role 'Admin'
+            var isAdmin = User.IsInRole("Admin");
+
+            if (post.AppUserId != currentUserId && !isAdmin)
+            {
+                return Unauthorized("Nu poți șterge postarea altcuiva (doar dacă ești Admin)!");
+            }
 
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
-            return Ok(new { message = "Sters" });
+            return Ok(new { message = "Sters cu succes" });
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePost(int id, [FromForm] UpdatePostDto postDto)
+        {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            var post = await _context.Posts.FindAsync(id);
+            if (post == null) return NotFound("Postarea nu există.");
+
+            var isAdmin = User.IsInRole("Admin");
+            if (post.AppUserId != currentUserId && !isAdmin)
+            {
+                return Forbid("Nu ai permisiunea să editezi această postare.");
+            }
+
+            // 1. Daca trimitem titlu/continut nou, le actualizam
+            if (!string.IsNullOrEmpty(postDto.Title)) post.Title = postDto.Title;
+            if (!string.IsNullOrEmpty(postDto.Content)) post.Content = postDto.Content;
+
+            // 2. VERIFICAM DACA A FOST INCARCAT UN FISIER NOU
+            if (postDto.File != null && postDto.File.Length > 0)
+            {
+                var extension = Path.GetExtension(postDto.File.FileName);
+                var fileName = Guid.NewGuid().ToString() + extension;
+
+                var folderName = extension.ToLower() == ".pdf" ? "documents" : "images";
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", folderName);
+
+                if (!Directory.Exists(uploadFolder))
+                {
+                    Directory.CreateDirectory(uploadFolder);
+                }
+
+                var filePath = Path.Combine(uploadFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await postDto.File.CopyToAsync(stream);
+                }
+
+                if (extension.ToLower() == ".pdf")
+                {
+                    post.FileUrl = Path.Combine(folderName, fileName).Replace("\\", "/");
+                    post.IsPdf = true;
+                    post.PhotoUrl = null;
+                }
+                else
+                {
+                    post.PhotoUrl = Path.Combine(folderName, fileName).Replace("\\", "/");
+                    post.IsPdf = false;
+                    post.FileUrl = null;
+                }
+            }
+
+            // 3. Salvam in Baza de Date
+            // Chiar daca SaveChanges() e 0 (adica nu s-a modificat nimic), returnam OK ca sa nu dea eroare pe frontend.
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+        // ... Metodele de Like si Comment ramân la fel ...
         [HttpPost("{postId}/like")]
         public async Task<ActionResult> LikePost(int postId)
         {
             var sourceUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
             var post = await _context.Posts.Include(p => p.Likes).FirstOrDefaultAsync(p => p.Id == postId);
             if (post == null) return NotFound();
-
             var existingLike = await _context.Likes.FindAsync(sourceUserId, postId);
-
             if (existingLike != null)
             {
                 _context.Likes.Remove(existingLike);
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "Unliked" });
             }
-
             var like = new PostLike { SourceUserId = sourceUserId, TargetPostId = postId };
             _context.Likes.Add(like);
-
             await _context.SaveChangesAsync();
             return Ok(new { message = "Liked" });
         }
@@ -157,19 +196,11 @@ namespace AcademicNode.API.Controllers
         [HttpPost("{postId}/comment")]
         public async Task<ActionResult> AddComment(int postId, CommentDto commentDto)
         {
-            // 1. Identificam userul logat
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
             var user = await _context.Users.FindAsync(userId);
             if (user == null) return Unauthorized();
-
-            // 2. Gasim postarea
-            var post = await _context.Posts
-                .Include(p => p.Comments) // Includem comentariile existente
-                .FirstOrDefaultAsync(p => p.Id == postId);
-
+            var post = await _context.Posts.Include(p => p.Comments).FirstOrDefaultAsync(p => p.Id == postId);
             if (post == null) return NotFound("Postarea nu există");
-
-            // 3. Cream comentariul nou
             var comment = new Comment
             {
                 Content = commentDto.Content,
@@ -177,25 +208,11 @@ namespace AcademicNode.API.Controllers
                 PostId = postId,
                 CreatedAt = DateTime.UtcNow
             };
-
-            // 4. Adaugam comentariul in lista postarii
             post.Comments.Add(comment);
-
-            // 5. Salvam in baza de date
             if (await _context.SaveChangesAsync() > 0)
             {
-                // Returnam un obiect care arata fix ca ce asteapta Frontend-ul
-                // (ID, Poza userului, Nume user, Text)
-                return Ok(new
-                {
-                    Id = comment.Id,
-                    Content = comment.Content,
-                    Username = user.UserName,
-                    PhotoUrl = user.PhotoUrl,
-                    CreatedAt = comment.CreatedAt
-                });
+                return Ok(new { Id = comment.Id, Content = comment.Content, Username = user.UserName, PhotoUrl = user.PhotoUrl, CreatedAt = comment.CreatedAt });
             }
-
             return BadRequest("Eroare la adăugarea comentariului");
         }
     }

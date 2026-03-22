@@ -3,6 +3,7 @@ import { FeedComponent } from './components/feed/feed';
 import { LoginComponent } from './components/login/login';
 import { RegisterComponent } from './components/register/register';
 import { MemberDetailComponent } from './components/member-detail/member-detail';
+import { roleGuard } from './role.guard';
 
 // 1. IMPORTĂ COMPONENTA DE ADMIN (Verifică să fie calea corectă către fișierul tău)
 import { AdminPanelComponent } from './components/admin-panel/admin-panel';
@@ -16,6 +17,8 @@ export const routes: Routes = [
   // 2. ADAUGĂ RUTA PENTRU ADMIN AICI:
   { path: 'admin', component: AdminPanelComponent },
 
+  { path: 'members/:username', component: MemberDetailComponent, canActivate: [roleGuard] },
+  { path: 'members', component: MemberDetailComponent, canActivate: [roleGuard] },
   // Ruta wildcard '**' RĂMÂNE OBLIGATORIU ULTIMA!
   { path: '**', redirectTo: '' }
 ];

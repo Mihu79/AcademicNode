@@ -1,25 +1,74 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from '../../models/user';
-import { AdminService } from '../../services/admin'
+import { AdminService } from '../../services/admin';
+import { ApiService } from '../../services/api';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-panel',
+  standalone: true,          
+  imports: [CommonModule],
   templateUrl: './admin-panel.html',
   styleUrls: ['./admin-panel.css']
 })
 export class AdminPanelComponent implements OnInit {
   users: Partial<User>[] = [];
 
-  // Variabile noi pentru editare
+  // Variabile pentru editare manuala
   availableRoles = ['Admin', 'Professor', 'Student', 'Normal'];
   editingUser: Partial<User> | null = null;
   selectedRoles: string[] = [];
 
-  constructor(private adminService: AdminService) { }
+  // --- ADAUGAT: Variabila pentru cererile noi ---
+  pendingRequests: any[] = [];
+
+  // --- ADAUGAT: Injectam ApiService langa AdminService ---
+  constructor(private adminService: AdminService, private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.getUsersWithRoles();
+    this.loadPendingRequests(); // Incarcam si cererile cand se deschide pagina
   }
+
+  // ==========================================
+  // 1. LOGICA PENTRU CERERI DE ROL (Tabelul de Sus)
+  // ==========================================
+
+  loadPendingRequests() {
+    this.apiService.getPendingRequests().subscribe({
+      next: (requests: any) => this.pendingRequests = requests,
+      error: (err: any) => console.log("Eroare incarcare cereri:", err)
+    });
+  }
+
+  approveRequest(id: number) {
+    if (confirm("Sigur aprobi această cerere? Utilizatorul va primi rolul imediat.")) {
+      this.apiService.approveRoleRequest(id).subscribe({
+        next: (res: any) => {
+          alert(res.message);
+          this.loadPendingRequests(); // Scoatem cererea din tabelul de sus
+          this.getUsersWithRoles();   // Actualizam tabelul de jos ca sa vedem noul rol!
+        },
+        error: (err: any) => alert(err.error || "Eroare la aprobare")
+      });
+    }
+  }
+
+  rejectRequest(id: number) {
+    if (confirm("Sigur respingi această cerere?")) {
+      this.apiService.rejectRoleRequest(id).subscribe({
+        next: (res: any) => {
+          alert(res.message);
+          this.loadPendingRequests(); // Scoatem cererea din tabel
+        },
+        error: (err: any) => alert(err.error || "Eroare la respingere")
+      });
+    }
+  }
+
+  // ==========================================
+  // 2. LOGICA PENTRU EDITARE MANUALA (Tabelul de Jos)
+  // ==========================================
 
   getUsersWithRoles() {
     this.adminService.getUsersWithRoles().subscribe({

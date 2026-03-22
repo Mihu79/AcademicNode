@@ -3,52 +3,52 @@
 
   <div class="mb-4 custom-search-wrapper">
     <i class="pi pi-search custom-search-icon"></i>
-
-    <input type="text" pInputText
-           placeholder="Caută după titlu sau autor..."
-           [(ngModel)]="searchText"
-           (ngModelChange)="filterPosts()"
-           class="w-full custom-search-input">
+    <input type="text" pInputText placeholder="Caută după titlu sau autor..." [(ngModel)]="searchText" (ngModelChange)="filterPosts()" class="w-full custom-search-input">
   </div>
   <br />
-  <div class="action-bar text-right mb-4 flex justify-content-end gap-2">
 
-    <p-button *ngIf="currentUser"
-              label="Profilul Meu"
-              icon="pi pi-user"
-              [routerLink]="['/members', currentUser.username]">
-    </p-button>
+  <div class="action-bar text-right mb-4 flex justify-content-end gap-2">
+    <p-button *ngIf="isNormalUser()" label="Solicită Acces Academic" icon="pi pi-id-card" styleClass="btn-request-role" (onClick)="showRequestDialog()"></p-button>
+
+    <p-button *ngIf="canInteract()" label="Profilul Meu" icon="pi pi-user" [routerLink]="['/members', currentUser?.username]"></p-button>
     <p> </p>
-    <p-button label="Postare Nouă" icon="pi pi-plus" (onClick)="showAddDialog()"></p-button>
+    <p-button *ngIf="canInteract()" label="Postare Nouă" icon="pi pi-plus" (onClick)="showAddDialog()"></p-button>
   </div>
 
   <div *ngIf="visiblePosts.length === 0" class="text-center p-5">
-    <p-card>
-      <h3>Nu există postări momentan.</h3>
-      <p>Fii tu primul care scrie ceva!</p>
-    </p-card>
+    <p-card><h3>Nu există postări momentan.</h3></p-card>
   </div>
 
   <div *ngFor="let post of visiblePosts" class="post-item mb-3">
-
-    <p-card>
+    <p-card [ngClass]="{'official-professor-card': isProfessor(post)}">
 
       <ng-template pTemplate="title">
-        {{ post.title }}
+        <div class="flex justify-content-between align-items-center">
+          <div>
+            <i *ngIf="post.isPdf" class="pi pi-file-pdf text-danger mr-2"></i>
+            {{ post.title }}
+          </div>
+          <br />
+          <div *ngIf="isProfessor(post)" class="official-badge">
+            <i class="pi pi-check-circle"></i> STAFF ACADEMIC
+          </div>
+        </div>
       </ng-template>
 
       <ng-template pTemplate="subtitle">
-        De:
-        <span [routerLink]="['/members', post.appUser?.userName]"
-              class="author-link">
-          {{ post.appUser?.userName || 'Anonim' }}
-        </span>
+        De: <span [routerLink]="['/members', post.appUser?.userName]" class="author-link">{{ post.appUser?.userName || 'Anonim' }}</span>
       </ng-template>
 
-      <div *ngIf="post.photoUrl" class="mb-3">
-        <img [src]="getPhotoUrl(post.photoUrl)"
-             alt="Post image"
-             style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
+      <div *ngIf="post.photoUrl && !post.isPdf" class="mb-3">
+        <img [src]="getPhotoUrl(post.photoUrl)" alt="Post image" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
+      </div>
+
+      <div *ngIf="post.isPdf || post.fileUrl" class="pdf-display-box">
+        <i class="pi pi-file-pdf pdf-icon"></i>
+        <h4 style="color: white; margin-bottom: 15px;">Document Atașat</h4>
+        <a [href]="getFileUrl(post.fileUrl || post.photoUrl)" target="_blank" class="btn-download-pdf">
+          <i class="pi pi-download"></i> Descarcă Documentul
+        </a>
       </div>
 
       <p class="post-content">{{ post.content }}</p>
@@ -74,10 +74,10 @@
                       (onClick)="toggleComments(post)">
             </p-button>
 
-            <small class="text-secondary">{{ post.createdAt | date:'short' }}</small>
+            <small class="text-secondary ml-3">{{ post.createdAt | date:'short' }}</small>
           </div>
 
-          <div *ngIf="currentUser && (currentUser.id === post.appUserId)" class="flex gap-2">
+          <div *ngIf="canEditOrDelete(post)" class="flex gap-2">
             <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-text p-button-warning btn-edit" (onClick)="showEditDialog(post)"></p-button>
             <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-text p-button-danger btn-delete" (onClick)="deletePost(post.id)"></p-button>
           </div>
@@ -86,64 +86,88 @@
         <div *ngIf="post.showComments" class="comments-section">
 
           <div *ngFor="let comment of post.comments" class="comment-row">
-            <span style="color: var(--neon-cyan); font-weight: bold; font-size: 0.9rem;">
+            <span [routerLink]="['/members', comment.username || comment.appUser?.userName]"
+                  class="comment-author-link">
               {{ comment.username || comment.appUser?.userName || 'Anonim' }}:
             </span>
-            <span style="color: #e0e0e0; margin-left: 8px; font-size: 0.95rem;">
-              {{ comment.content }}
-            </span>
+            <span style="color: #e0e0e0; margin-left: 8px; font-size: 0.95rem;">{{ comment.content }}</span>
           </div>
 
           <div *ngIf="!post.comments || post.comments.length === 0" class="text-center mb-3 text-secondary">
-            <small>Fii primul care comentează!</small>
+            <small>Nu există comentarii încă.</small>
           </div>
 
-          <div *ngIf="currentUser" class="comment-input-wrapper">
-            <input type="text" pInputText
-                   [(ngModel)]="post.newCommentText"
-                   placeholder="Scrie un comentariu..."
-                   style="width: 100%;"
-                   (keydown.enter)="submitComment(post)">
-
-            <p-button icon="pi pi-send"
-                      styleClass="send-btn"
-                      [rounded]="true"
-                      [text]="true"
-                      (onClick)="submitComment(post)">
-            </p-button>
+          <div *ngIf="canInteract()" class="comment-input-wrapper">
+            <input type="text" pInputText [(ngModel)]="post.newCommentText" placeholder="Scrie un comentariu..." style="width: 100%;" (keydown.enter)="submitComment(post)">
+            <p-button icon="pi pi-send" styleClass="send-btn" [rounded]="true" [text]="true" (onClick)="submitComment(post)"></p-button>
           </div>
+
+          <div *ngIf="!canInteract()" class="role-restriction-msg">
+            <i class="pi pi-info-circle"></i>
+            <span>Doar studenții sau profesorii pot lăsa comentarii. Ești pe modul vizitator.</span>
+          </div>
+
         </div>
-
       </ng-template>
     </p-card>
   </div>
 
-  <p-dialog [header]="isEditMode ? 'Editează Postarea' : 'Postare Nouă'"
-            [(visible)]="visible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-
+  <p-dialog [header]="isEditMode ? 'Editează Postarea' : 'Postare Nouă'" [(visible)]="visible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
     <div class="flex flex-column gap-3">
+
       <div class="flex flex-column gap-2">
         <label>Titlu</label>
         <input pInputText [(ngModel)]="postData.title" />
       </div>
 
       <div class="flex flex-column gap-2">
-        <label>Conținut</label>
+        <label>Conținut / Descriere curs</label>
         <textarea pInputText [(ngModel)]="postData.content" rows="5"></textarea>
       </div>
 
-      <div *ngIf="!isEditMode" class="flex flex-column gap-2">
-        <label>Alege o poză</label>
-        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="p-inputtext">
+      <div class="flex flex-column gap-2">
+        <label>{{ isEditMode ? 'Schimbă fișierul atașat (Opțional)' : 'Alege un fișier (Poză sau PDF)' }}</label>
+        <input type="file" (change)="onFileSelected($event)" accept="image/*,application/pdf" class="p-inputtext">
 
-        <div *ngIf="previewUrl" class="mt-3 text-center">
-          <p class="mb-2" style="color: var(--neon-cyan); font-size: 0.8rem;">Preview:</p>
-          <img [src]="previewUrl" class="preview-image">
+        <div *ngIf="previewUrl && !isPdfSelected" class="mt-3 text-center">
+          <p class="mb-2" style="color: var(--neon-cyan); font-size: 0.8rem;">Preview Imagine:</p>
+          <img [src]="previewUrl" class="preview-image" style="max-height: 200px; border-radius: 8px;">
+        </div>
+
+        <div *ngIf="isPdfSelected" class="pdf-display-box mt-3">
+          <i class="pi pi-file-pdf pdf-icon" style="font-size: 2rem;"></i>
+          <p class="mt-2" style="color: var(--neon-cyan);">Document PDF atașat / selectat.</p>
         </div>
       </div>
 
       <div class="flex justify-content-end mt-3">
         <p-button [label]="isEditMode ? 'Salvează' : 'Publică'" icon="pi pi-check" (onClick)="submitPost()"></p-button>
+      </div>
+
+    </div>
+  </p-dialog>
+
+  <p-dialog header="Solicită Acces Academic" [(visible)]="requestDialogVisible" [modal]="true" [style]="{ width: '40vw' }" [draggable]="false" [resizable]="false">
+    <div class="flex flex-column gap-3">
+      <p style="color: var(--text-secondary); line-height: 1.5;">
+        Contul tău are drepturi limitate (Vizitator). Alege rolul pe care îl dorești și lasă un mesaj administratorului pentru a-ți valida contul.
+      </p>
+
+      <div class="flex flex-column gap-2">
+        <label>Rol Dorit</label>
+        <select class="custom-request-input" [(ngModel)]="requestData.requestedRole" style="cursor: pointer;">
+          <option value="Student">Sunt Student</option>
+          <option value="Professor">Sunt Profesor</option>
+        </select>
+      </div>
+
+      <div class="flex flex-column gap-2">
+        <label>Mesaj / Justificare</label>
+        <textarea class="custom-request-input" pInputText [(ngModel)]="requestData.message" rows="4" placeholder="Ex: Bună, sunt student la specializarea CTI, anul 3. Vă rog să îmi aprobați contul."></textarea>
+      </div>
+
+      <div class="flex justify-content-end mt-3">
+        <p-button label="Trimite Cererea" icon="pi pi-send" severity="help" (onClick)="submitRoleRequest()"></p-button>
       </div>
     </div>
   </p-dialog>

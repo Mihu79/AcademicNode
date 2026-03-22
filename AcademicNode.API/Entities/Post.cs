@@ -10,6 +10,9 @@ namespace AcademicNode.API.Entities
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public string? FileUrl { get; set; }
+        public bool IsPdf { get; set; } = false;
+
         public string PhotoUrl { get; set; }
         public int AppUserId { get; set; }
 

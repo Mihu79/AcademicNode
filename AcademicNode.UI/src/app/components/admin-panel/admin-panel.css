@@ -145,3 +145,73 @@ h2.text-warning {
   .btn-secondary:hover {
     background-color: #606060;
   }
+
+
+/* --- TABELUL DE CERERI (CYBER STYLE) --- */
+.pending-requests-table {
+  border-collapse: separate;
+  border-spacing: 0 10px; /* Spatiu intre randuri pentru efect de card */
+  background: transparent !important;
+  border: none !important;
+}
+
+  .pending-requests-table thead th {
+    background-color: rgba(13, 202, 240, 0.1) !important; /* Fundal cyan foarte sters */
+    color: #0dcaf0 !important; /* Text cyan */
+    border-bottom: 2px solid #0dcaf0 !important;
+    border-top: none !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    padding: 15px;
+  }
+
+  .pending-requests-table tbody tr {
+    background-color: #1a1a24; /* Fundalul randului */
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  }
+
+    .pending-requests-table tbody tr:hover {
+      background-color: #232332;
+      transform: scale(1.01); /* Se mareste putin cand pui mouse-ul pe el */
+      box-shadow: 0 0 15px rgba(13, 202, 240, 0.2);
+    }
+
+  .pending-requests-table td {
+    border-top: 1px solid #2a2a35;
+    border-bottom: 1px solid #2a2a35;
+    padding: 15px !important;
+  }
+
+    /* Rotunjim colturile stanga si dreapta pentru fiecare rand */
+    .pending-requests-table td:first-child {
+      border-left: 1px solid #2a2a35;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .pending-requests-table td:last-child {
+      border-right: 1px solid #2a2a35;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+/* --- BADGES PENTRU ROLURI --- */
+.custom-badge-student {
+  background-color: rgba(0, 255, 136, 0.1) !important;
+  color: #00ff88 !important;
+  border: 1px solid #00ff88;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.custom-badge-professor {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  color: #ffc107 !important;
+  border: 1px solid #ffc107;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+}

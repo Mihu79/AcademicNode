@@ -25,6 +25,7 @@ namespace AcademicNode.API.Data
         public DbSet<Experience> Experiences { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Certification> Certifications { get; set; }
+        public DbSet<RoleRequest> RoleRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -56,6 +56,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddCors();
 
+builder.Services.AddScoped<FileService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
