@@ -35,6 +35,22 @@ namespace AcademicNode.API.Controllers
                 .ToListAsync();
         }
 
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<Post>>> GetUserPosts(string username)
+        {
+            var posts = await _context.Posts
+                .Include(p => p.AppUser)
+                .Include(p => p.Likes)
+                .Include(p => p.Comments)
+                    .ThenInclude(c => c.AppUser)
+                .Where(p => p.AppUser.UserName.ToLower() == username.ToLower())
+                .OrderByDescending(p => p.CreatedAt)
+                .AsSplitQuery()
+                .ToListAsync();
+
+            return Ok(posts);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Post>> CreatePost([FromForm] PostDto postDto)
         {

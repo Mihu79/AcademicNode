@@ -195,4 +195,29 @@ export class ApiService {
   rejectRoleRequest(id: number) {
     return this.http.post(this.baseUrl + `/rolerequests/${id}/reject`, {}, this.getAuthHeaders());
   }
+
+  forgotPassword(email: string) {
+   
+    return this.http.post(this.baseUrl + '/account/forgot-password', { email: email });
+  }
+
+  resetPassword(data: any) {
+    
+    return this.http.post(this.baseUrl + '/account/reset-password', data);
+  }
+
+  getUserPosts(username: string) {
+    // 1. Cautam legitimația in buzunar
+    const userString = localStorage.getItem('user');
+    let headers = {};
+
+    // 2. Daca o gasim, o pregatim de trimis
+    if (userString) {
+      const user = JSON.parse(userString);
+      headers = { Authorization: 'Bearer ' + user.token };
+    }
+
+    // 3. Batem la usa serverului si ii aratam legitimația
+    return this.http.get<any[]>(this.baseUrl + '/posts/user/' + username, { headers });
+  }
 }

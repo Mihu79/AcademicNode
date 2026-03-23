@@ -41,7 +41,8 @@ namespace AcademicNode.API.Controllers
         public async Task<ActionResult<MemberDto>> GetUser(string username)
         {
             var user = await _context.Users
-            
+                .Include(x => x.UserRoles)        
+                .ThenInclude(ur => ur.Role)
                 .Include(x => x.Experiences)
                 .Include(x => x.Educations)
                 .Include(x => x.Projects)
@@ -75,6 +76,9 @@ namespace AcademicNode.API.Controllers
                 Introduction = user.Introduction,
                 City = user.City,
                 Country = user.Country,
+                Email = user.Email,       
+                Phone = user.PhoneNumber,
+                Role = user.UserRoles?.FirstOrDefault()?.Role?.Name,
 
                 // AICI ESTE CHEIA: Mapam listele manual
                 Experiences = user.Experiences.Select(e => new ExperienceDto
@@ -131,6 +135,8 @@ namespace AcademicNode.API.Controllers
             user.Introduction = memberUpdateDto.Introduction;
             user.City = memberUpdateDto.City;
             user.Country = memberUpdateDto.Country;
+            user.Email = memberUpdateDto.Email;
+            user.PhoneNumber = memberUpdateDto.Phone;
 
             // 4. Salvam modificarile
             if (await _context.SaveChangesAsync() > 0) return NoContent();

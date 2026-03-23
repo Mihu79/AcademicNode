@@ -44,25 +44,29 @@ namespace AcademicNode.API.Controllers
         [HttpPost("edit-roles/{username}")]
         public async Task<ActionResult> EditRoles(string username, [FromQuery] string roles)
         {
-            if (string.IsNullOrEmpty(roles)) return BadRequest("Trebuie să selectezi cel puțin un rol");
+            // Chiar daca parametrul se cheama inca "roles" (ca sa nu stricam Angular-ul), 
+            // noi il vom trata ca pe un singur rol.
+            if (string.IsNullOrEmpty(roles)) return BadRequest("Trebuie să selectezi un rol");
 
-            // Separam string-ul "Professor,Admin" in o lista ["Professor", "Admin"]
-            var selectedRoles = roles.Split(",").ToArray();
+            // Daca din greseala Angular inca trimite "Admin,Professor", noi luam doar primul cuvant.
+            // Daca trimite doar "Professor", e perfect.
+            var selectedRole = roles.Split(",").First().Trim();
 
             var user = await _userManager.FindByNameAsync(username);
             if (user == null) return NotFound("Userul nu a fost găsit");
 
-            // Aflam ce roluri are userul in prezent
-            var userRoles = await _userManager.GetRolesAsync(user);
+            // 1. Aflam TOATE rolurile pe care le are userul in prezent (ca sa facem curatenie generala)
+            var currentRoles = await _userManager.GetRolesAsync(user);
 
-            // Adaugam rolurile noi pe care NU le are deja
-            var result = await _userManager.AddToRolesAsync(user, selectedRoles.Except(userRoles));
-            if (!result.Succeeded) return BadRequest("Nu am putut adăuga rolurile");
+            // 2. Stergem ABSOLUT TOATE rolurile vechi
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded) return BadRequest("Nu am putut șterge rolurile vechi");
 
-            // Stergem rolurile vechi pe care NU le-a mai selectat adminul in Angular
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
-            if (!result.Succeeded) return BadRequest("Nu am putut șterge rolurile vechi");
+            // 3. Ii dam DOAR noul rol selectat
+            var addResult = await _userManager.AddToRoleAsync(user, selectedRole);
+            if (!addResult.Succeeded) return BadRequest("Nu am putut adăuga noul rol. Verifică dacă rolul există în baza de date.");
 
+            // Returnam noua lista (care acum va avea mereu un singur element)
             return Ok(await _userManager.GetRolesAsync(user));
         }
     }

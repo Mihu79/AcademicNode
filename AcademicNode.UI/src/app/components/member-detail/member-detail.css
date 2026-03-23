@@ -241,3 +241,139 @@ label {
     color: white !important;
     background: rgba(255, 255, 255, 0.1) !important;
   }
+
+
+.posts-list-wrapper {
+  max-width: 680px; /* Aceeasi dimensiune standard ca in feed */
+  margin: 0 auto; /* Centreaza postarea pe ecran */
+  width: 100%;
+}
+
+/* --- VARIABILE PENTRU CULORI NEON --- */
+:host {
+  --neon-purple: #bc13fe;
+  --neon-cyan: #00f2ff;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+}
+
+/* --- STILIZARE CARDURI POSTARI --- */
+.post-item {
+  margin-bottom: 2.5rem;
+}
+
+  .post-item ::ng-deep .p-card {
+    background-color: #1a1a1a;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .post-item:hover ::ng-deep .p-card {
+    transform: translateY(-5px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 10px 40px -10px rgba(0, 242, 255, 0.15);
+  }
+
+.post-content {
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+  font-size: 0.8rem;
+}
+
+/* --- PREVIEW IMAGINE UPLOAD --- */
+/* --- PREVIEW IMAGINE UPLOAD (FORȚARE UNIFORMITATE) --- */
+.preview-image {
+  width: 100%; /* Ocupa toata latimea cardului */
+  height: 380px; /* ÎNĂLȚIME FIXA: Alege orice valoare vrei (ex: 250px, 300px) pentru a face toate pozele egale */
+  /* APARE MAGIA AICI: */
+  object-fit: cover; /* Esențial: decupează și umple containerul de 280px fără să deformeze poza */
+  object-position: center; /* Se asigură că decuparea e centrală (nu taie capetele) */
+
+  border-radius: 8px;
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+  margin-top: 15px;
+}
+
+/* --- STILIZARE PDF DISPLAY --- */
+.pdf-display-box {
+  background-color: rgba(0, 242, 255, 0.05) !important;
+  border: 1px dashed var(--neon-cyan) !important;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+}
+
+  .pdf-display-box:hover {
+    background-color: rgba(0, 242, 255, 0.1) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+  }
+
+.pdf-icon {
+  font-size: 3rem;
+  color: #ff4757 !important;
+  text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+  margin-bottom: 15px;
+}
+
+.btn-download-pdf {
+  background: transparent !important;
+  border: 1px solid var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+  .btn-download-pdf:hover {
+    background: var(--neon-cyan) !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px var(--neon-cyan);
+    transform: scale(1.05);
+  }
+
+/* --- STILIZARE POSTARE PROFESOR (STAFF ACADEMIC) --- */
+::ng-deep .official-professor-card.p-card {
+  border: 1px solid #ffc107 !important;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.1) !important;
+  background: linear-gradient(145deg, #1a1a1a, #1f1b0d) !important;
+}
+
+  ::ng-deep .official-professor-card.p-card:hover {
+    border-color: #ffca28 !important;
+    box-shadow: 0 10px 40px -10px rgba(255, 193, 7, 0.25) !important;
+    transform: translateY(-5px);
+  }
+
+.official-badge {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+  border: 1px solid #ffc107;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+  text-transform: uppercase;
+}
+
+::ng-deep .official-professor-card .p-card-title {
+  color: #ffc107 !important;
+}

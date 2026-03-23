@@ -16,8 +16,33 @@
 
       <p-button label="Intră în cont" icon="pi pi-sign-in" (onClick)="login()"></p-button>
 
+      <div style="text-align: center; margin-top: 5px;">
+        <a (click)="showForgotPasswordDialog()" style="color: #0dcaf0; cursor: pointer; text-decoration: underline; font-size: 0.9rem;">
+          Ai uitat parola?
+        </a>
+      </div>
+
     </div>
 
   </p-card>
 
 </div>
+
+<p-dialog header="Resetare Parolă" [(visible)]="forgotPasswordVisible" [modal]="true" [style]="{ width: '400px' }" [draggable]="false" [resizable]="false">
+  <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px;">
+
+    <p style="color: #bbb; font-size: 0.9rem; margin: 0;">
+      Introdu adresa de email asociată contului tău, iar noi îți vom trimite un link pentru resetare.
+    </p>
+
+    <div style="display: flex; flex-direction: column; gap: 5px;">
+      <label>Email</label>
+      <input type="email" pInputText [(ngModel)]="forgotPasswordEmail" placeholder="nume@student.ro" style="width: 100%;">
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+      <p-button label="Trimite Link" icon="pi pi-envelope" severity="help" (onClick)="submitForgotPassword()"></p-button>
+    </div>
+
+  </div>
+</p-dialog>

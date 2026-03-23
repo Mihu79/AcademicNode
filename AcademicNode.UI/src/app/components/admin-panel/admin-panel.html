@@ -84,11 +84,13 @@
       <div class="mt-3">
         @for (role of availableRoles; track role) {
         <div class="form-check form-check-inline me-4">
-          <input class="form-check-input" type="checkbox"
-                 [checked]="selectedRoles.includes(role)"
-                 (change)="toggleRole(role)"
-                 [id]="role">
-          <label class="form-check-label" [for]="role">{{role}}</label>
+          <input class="form-check-input" type="radio"
+                 name="userRole"
+                 [checked]="selectedRole === role"
+                 (change)="selectedRole = role"
+                 [id]="role"
+                 style="cursor: pointer;">
+          <label class="form-check-label text-light" style="cursor: pointer;" [for]="role">{{role}}</label>
         </div>
         }
       </div>

@@ -28,6 +28,11 @@ export class ChatbotComponent {
 
   toggleChat() {
     this.isOpen = !this.isOpen;
+
+    // Daca fereastra tocmai s-a inchis (adica isOpen a devenit false), resetam conversatia
+    if (!this.isOpen) {
+      this.resetChat();
+    }
   }
 
   sendMessage() {
@@ -97,5 +102,11 @@ export class ChatbotComponent {
       const chatBody = document.querySelector('.chat-body');
       if (chatBody) chatBody.scrollTop = chatBody.scrollHeight;
     }, 100);
+  }
+  // NOU: Functia care sterge istoricul si lasa doar mesajul de salut
+  resetChat() {
+    this.messages = [
+      { text: 'Salut! Eu sunt AcademiAI, asistentul tau virtual. Cu ce te pot ajuta?', sender: 'bot' }
+    ];
   }
 }

@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-admin-panel',
-  standalone: true,          
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-panel.html',
   styleUrls: ['./admin-panel.css']
@@ -17,17 +17,16 @@ export class AdminPanelComponent implements OnInit {
   // Variabile pentru editare manuala
   availableRoles = ['Admin', 'Professor', 'Student', 'Normal'];
   editingUser: Partial<User> | null = null;
-  selectedRoles: string[] = [];
+  selectedRole: string = ''; // Acum e un singur cuvant
 
-  // --- ADAUGAT: Variabila pentru cererile noi ---
+  // Variabila pentru cererile noi
   pendingRequests: any[] = [];
 
-  // --- ADAUGAT: Injectam ApiService langa AdminService ---
   constructor(private adminService: AdminService, private apiService: ApiService) { }
 
   ngOnInit(): void {
     this.getUsersWithRoles();
-    this.loadPendingRequests(); // Incarcam si cererile cand se deschide pagina
+    this.loadPendingRequests();
   }
 
   // ==========================================
@@ -78,37 +77,31 @@ export class AdminPanelComponent implements OnInit {
   }
 
   // Cand apasam pe butonul albastru "Editeaza"
-  openEditPanel(user: Partial<User>) {
+  openEditPanel(user: any) {
     this.editingUser = user;
-    // Copiem rolurile pe care le are deja, ca sa apara bifate
-    this.selectedRoles = [...(user.roles || [])];
-  }
-
-  // Cand bifam sau debifam o casuta
-  toggleRole(role: string) {
-    const index = this.selectedRoles.indexOf(role);
-    if (index !== -1) {
-      this.selectedRoles.splice(index, 1); // Daca era bifat, il scoatem
-    } else {
-      this.selectedRoles.push(role); // Daca nu era, il adaugam
-    }
+    // Luam primul rol pe care il are (sau il lasam gol daca nu are)
+    this.selectedRole = user.roles && user.roles.length > 0 ? user.roles[0] : '';
   }
 
   // Cand apasam "Salveaza"
   saveRoles() {
     if (!this.editingUser?.username) return;
 
-    // Transformam array-ul ['Professor', 'Student'] in string-ul "Professor,Student" pentru C#
-    const rolesString = this.selectedRoles.join(',');
+    if (!this.selectedRole) {
+      alert("Te rog să selectezi un rol din listă!");
+      return;
+    }
 
-    this.adminService.updateUserRoles(this.editingUser.username, rolesString).subscribe({
+    // Acum trimitem fix cuvantul selectat (ex: "Professor") catre backend
+    this.adminService.updateUserRoles(this.editingUser.username, this.selectedRole).subscribe({
       next: (roles: string[]) => {
         if (this.editingUser) {
-          this.editingUser.roles = roles; // Actualizam tabelul vizual cu noile roluri
+          this.editingUser.roles = roles; // Actualizam tabelul vizual cu noul rol venit de la server
         }
+        
         this.editingUser = null; // Inchidem panoul de editare
       },
-      error: (err: any) => console.log(err)
+      error: (err: any) => alert("A apărut o eroare la salvare!")
     });
   }
 

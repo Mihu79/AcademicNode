@@ -20,6 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddDbContext<DataContext>(opt =>
 {
@@ -40,7 +41,8 @@ builder.Services.AddIdentityCore<AppUser>(opt =>
 })
     .AddRoles<AppRole>()
     .AddRoleManager<RoleManager<AppRole>>()
-    .AddEntityFrameworkStores<DataContext>();
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

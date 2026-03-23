@@ -15,6 +15,9 @@ namespace AcademicNode.API.DTOs
         public string Introduction { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Role { get; set; }
         // Adauga proprietatile astea in MemberDto
         public ICollection<EducationDto> Educations { get; set; }
         public ICollection<ExperienceDto> Experiences { get; set; }
