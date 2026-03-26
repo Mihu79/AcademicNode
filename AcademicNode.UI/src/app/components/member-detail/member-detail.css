@@ -290,7 +290,7 @@ label {
 /* --- PREVIEW IMAGINE UPLOAD (FORȚARE UNIFORMITATE) --- */
 .preview-image {
   width: 100%; /* Ocupa toata latimea cardului */
-  height: 380px; /* ÎNĂLȚIME FIXA: Alege orice valoare vrei (ex: 250px, 300px) pentru a face toate pozele egale */
+  height: 580px; /* ÎNĂLȚIME FIXA: Alege orice valoare vrei (ex: 250px, 300px) pentru a face toate pozele egale */
   /* APARE MAGIA AICI: */
   object-fit: cover; /* Esențial: decupează și umple containerul de 280px fără să deformeze poza */
   object-position: center; /* Se asigură că decuparea e centrală (nu taie capetele) */
@@ -376,4 +376,75 @@ label {
 
 ::ng-deep .official-professor-card .p-card-title {
   color: #ffc107 !important;
+}
+/* --- BARA DE CĂUTARE POSTĂRI (PROFIL) --- */
+.custom-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+.custom-search-icon {
+  position: absolute;
+  left: 15px;
+  color: var(--neon-cyan);
+  font-size: 1.2rem;
+  z-index: 1;
+}
+
+.custom-search-input {
+  width: 100%;
+  padding: 12px 15px 12px 45px !important; /* 45px face loc pentru iconița din stânga */
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 242, 255, 0.3) !important;
+  border-radius: 25px !important;
+  color: var(--text-primary) !important;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+}
+
+  .custom-search-input:focus {
+    outline: none;
+    border-color: var(--neon-cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3) !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+  }
+
+  .custom-search-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+/* --- RESPONSIVE PROFIL (MOBIL) --- */
+@media screen and (max-width: 768px) {
+  /* Redimensionam imaginea de profil */
+  .profile-image {
+    width: 150px !important;
+    height: 150px !important;
+  }
+
+  /* Facem tab-urile sa curga pe mai multe randuri daca nu incap (Scroll orizontal sau Wrap) */
+  ::ng-deep .p-tablist-nav {
+    flex-wrap: wrap !important;
+    justify-content: center;
+  }
+
+  ::ng-deep .p-tablist .p-tab {
+    padding: 10px !important;
+    font-size: 0.9rem;
+  }
+
+  /* Detaliile cu email si telefon asezate mai aerisit */
+  .flex.flex-column.align-items-center span {
+    font-size: 0.9rem !important;
+    text-align: center;
+    word-break: break-all; /* Previne email-urile lungi sa iasa din ecran */
+  }
+
+  /* Bara de cautare a postarilor pe profil */
+  .custom-search-wrapper {
+    margin-bottom: 15px;
+  }
 }

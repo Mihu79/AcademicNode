@@ -177,3 +177,41 @@
     transform: scale(1);
   }
 }
+/* =========================================
+   RESPONSIVE DESIGN - CHATBOT (MOBIL)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  /* Butonul de deschidere (bula de chat) sa fie putin mai mic si retras */
+  .chat-trigger {
+    bottom: 15px !important;
+    right: 15px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  /* Fereastra de chat devine FULL SCREEN pe telefon */
+  .chat-window {
+    width: 100vw !important;
+    height: 100dvh !important; /* Folosim dvh pentru a evita problema cu bara de adrese pe Safari/Chrome iOS/Android */
+    bottom: 0 !important;
+    right: 0 !important;
+    border-radius: 0 !important; /* Scoatem marginile rotunjite pentru ca ocupa tot ecranul */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chat-header {
+    border-radius: 0 !important;
+    padding: 15px !important;
+  }
+
+  .chat-body {
+    flex-grow: 1 !important; /* Ocupa tot spatiul ramas liber */
+    max-height: none !important;
+  }
+
+  /* Prevenim efectul enervant de auto-zoom pe iPhone cand apesi sa scrii mesajul */
+  .chat-footer input {
+    font-size: 16px !important;
+  }
+}

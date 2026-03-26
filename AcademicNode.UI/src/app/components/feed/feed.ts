@@ -8,11 +8,12 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { PostCardComponent } from '../post-card/post-card';
 
 @Component({
   selector: 'app-feed',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardModule, RouterModule, ButtonModule, DialogModule, InputTextModule, TooltipModule],
+  imports: [CommonModule, FormsModule, CardModule, RouterModule, ButtonModule, DialogModule, InputTextModule, TooltipModule, PostCardComponent],
   templateUrl: './feed.html',
   styleUrl: './feed.css'
 })

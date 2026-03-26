@@ -74,46 +74,19 @@
             <p-tabpanel value="4"><div *ngIf="!member.certifications.length" class="text-gray-500 font-italic">Nu a adăugat certificări.</div><div *ngFor="let cert of member.certifications" class="mb-3 p-3 border-round surface-ground flex align-items-center gap-3"><i class="pi pi-verified text-green-400 text-3xl"></i><div><div class="font-bold text-lg">{{cert.name}}</div><div class="text-gray-400">{{cert.issuer}} • {{cert.dateIssued | date:'dd MMM yyyy'}}</div></div></div></p-tabpanel>
 
             <p-tabpanel value="5">
-              <div *ngIf="userPosts.length === 0" class="text-gray-500 font-italic text-center p-4">
+              <div class="custom-search-wrapper mb-4" style="max-width: 680px; margin: 0 auto;">
+                <i class="pi pi-search custom-search-icon"></i>
+                <input type="text" pInputText placeholder="Caută în postări după titlu..." [(ngModel)]="searchPostTitle" class="custom-search-input w-full">
+              </div>
+              <br /> <br />
+              <div *ngIf="filteredUserPosts.length === 0" class="text-gray-500 font-italic text-center p-4">
                 <i class="pi pi-folder-open mb-3" style="font-size: 2rem; color: var(--neon-purple);"></i>
-                <p>Acest utilizator nu a publicat nicio postare încă.</p>
+                <p>Nicio postare găsită.</p>
               </div>
 
               <div class="posts-list-wrapper mt-4">
-                <div *ngFor="let post of userPosts" class="post-item">
-                  <p-card [styleClass]="member.role === 'Professor' ? 'official-professor-card' : ''">
-
-                    <ng-template pTemplate="title">
-                      <span [style.color]="member.role === 'Professor' ? '#ffc107' : 'var(--text-primary)'">
-                        {{post.title}}
-                      </span>
-                    </ng-template>
-
-                    <ng-template pTemplate="subheader">
-                      {{post.createdAt | date:'dd MMM yyyy, HH:mm'}}
-                    </ng-template>
-
-                    <ng-template pTemplate="content">
-                      <span *ngIf="member.role === 'Professor'" class="official-badge mb-3 block">
-                        <i class="pi pi-verified"></i> OFFICIAL STAFF
-                      </span>
-
-                      <div class="post-content mt-3 text-light">{{post.content}}</div>
-
-                      <div *ngIf="post.photoUrl" class="text-center mt-3">
-                        <img [src]="'http://localhost:5160/' + post.photoUrl" class="preview-image">
-                      </div>
-
-                      <div *ngIf="post.isPdf && post.fileUrl" class="pdf-display-box mt-3">
-                        <i class="pi pi-file-pdf pdf-icon block"></i>
-                        <p style="color: #fff; margin-bottom: 15px;">Atașament PDF adăugat la această postare</p>
-                        <a [href]="'http://localhost:5160/' + post.fileUrl" target="_blank" class="btn-download-pdf">
-                          <i class="pi pi-download"></i> Descarcă Documentul
-                        </a>
-                      </div>
-                    </ng-template>
-
-                  </p-card>
+                <div *ngFor="let post of filteredUserPosts" class="post-item">
+                  <app-post-card [post]="post" [currentUser]="currentUser" [userRoles]="userRoles" (edit)="startEditPost($event)" (delete)="deletePost($event)"></app-post-card>
                 </div>
               </div>
             </p-tabpanel>
@@ -172,4 +145,36 @@
       <p-tabpanel value="4"><div *ngFor="let cert of member?.certifications" class="flex justify-content-between align-items-center p-3 mb-2 surface-ground border-round"><div><span class="font-bold">{{ cert.name }}</span></div><div class="flex gap-2"><p-button icon="pi pi-pencil" [text]="true" severity="info" (onClick)="startEditCertification(cert)"></p-button> <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="deleteCertification(cert.id)"></p-button></div></div><hr class="my-3 border-top-1 surface-border" /><h4 class="mt-0" [style.color]="editingCertId ? 'var(--neon-purple)' : 'var(--neon-cyan)'">{{ editingCertId ? 'Editează Certificare' : 'Adaugă Certificare' }}</h4><div class="grid p-fluid"><div class="col-12 mb-2"><input pInputText placeholder="Nume" [(ngModel)]="newCertification.name"></div><div class="col-6 mb-2"><input pInputText placeholder="Emitent" [(ngModel)]="newCertification.issuer"></div><div class="col-6 mb-2"><label class="block text-gray-400 mb-1 text-sm">Data Obținerii</label> <p-datepicker [(ngModel)]="newCertification.dateIssued" dateFormat="dd.mm.yy"></p-datepicker></div><div class="col-12 flex gap-2"><p-button [label]="editingCertId ? 'Salvează' : 'Adaugă'" [icon]="editingCertId ? 'pi pi-save' : 'pi pi-plus'" [outlined]="true" (onClick)="saveCertification()"></p-button> <p-button *ngIf="editingCertId" label="Anulează" icon="pi pi-times" severity="secondary" [text]="true" (onClick)="cancelEditCertification()"></p-button></div></div></p-tabpanel>
     </p-tabpanels>
   </p-tabs>
+</p-dialog>
+<p-dialog header="Editează Postarea" [(visible)]="editPostVisible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+  <div class="flex flex-column gap-3 pt-2">
+    <div class="flex flex-column gap-2">
+      <label>Titlu</label>
+      <input pInputText [(ngModel)]="postData.title" />
+    </div>
+    <br />
+    <div class="flex flex-column gap-2">
+      <label>Conținut / Descriere curs</label>
+      <textarea pTextarea [(ngModel)]="postData.content" rows="5"></textarea>
+    </div>
+    <br />
+    <div class="flex flex-column gap-2">
+      <label>Schimbă fișierul atașat (Opțional)</label>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*,application/pdf" class="p-inputtext">
+      <br />
+      <div *ngIf="previewUrl && !isPdfSelected" class="mt-3 text-center">
+        <p class="mb-2" style="color: var(--neon-cyan); font-size: 0.8rem;">Preview Imagine Nouă:</p>
+        <img [src]="previewUrl" class="preview-image" style="max-height: 200px; border-radius: 8px;">
+      </div>
+      <br />
+      <div *ngIf="isPdfSelected" class="pdf-display-box mt-3">
+        <i class="pi pi-file-pdf pdf-icon" style="font-size: 2rem;"></i>
+        <p class="mt-2" style="color: var(--neon-cyan);">Document PDF nou selectat.</p>
+      </div>
+    </div>
+    <br />
+    <div class="flex justify-content-end mt-3">
+      <p-button label="Salvează Modificările" icon="pi pi-check" (onClick)="submitPostUpdate()"></p-button>
+    </div>
+  </div>
 </p-dialog>

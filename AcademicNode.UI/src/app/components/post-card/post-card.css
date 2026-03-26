@@ -1,0 +1,238 @@
+/* --- VARIABILE PENTRU CULORI NEON --- */
+:host {
+  --neon-purple: #bc13fe;
+  --neon-cyan: #00f2ff;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+}
+
+/* --- STILIZARE CARDURI POSTARI --- */
+::ng-deep .p-card {
+  background-color: #1a1a1a;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+:host:hover ::ng-deep .p-card {
+  transform: translateY(-5px);
+  border-color: var(--neon-cyan);
+  box-shadow: 0 10px 40px -10px rgba(0, 242, 255, 0.15);
+}
+
+.post-content {
+  margin-bottom: 1.5rem;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* --- STILIZARE POSTARE PROFESOR --- */
+::ng-deep .official-professor-card.p-card {
+  border: 1px solid #ffc107 !important;
+  box-shadow: 0 0 15px rgba(255, 193, 7, 0.1) !important;
+  background: linear-gradient(145deg, #1a1a1a, #1f1b0d) !important;
+}
+
+  ::ng-deep .official-professor-card.p-card:hover {
+    border-color: #ffca28 !important;
+    box-shadow: 0 10px 40px -10px rgba(255, 193, 7, 0.25) !important;
+  }
+
+/* --- INSIGNĂ PROFESOR (PREMIUM & COMPLEX) --- */
+.official-badge {
+  /* Font complet schimbat: modern, geometric, curat */
+  font-family: 'Montserrat', 'Segoe UI', 'Roboto', sans-serif;
+  /* Fundal cu gradient subtil și efect de sticlă mată */
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 152, 0, 0.15));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #ffca28;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  padding: 5px 16px;
+  border-radius: 30px;
+  /* Text styling avansat */
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* Umbre multiple: una exterioară pentru glow, una interioară pentru adâncime */
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.1), inset 0 0 10px rgba(255, 193, 7, 0.05);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+  /* Efect de strălucire pe iconița de checkmark */
+  .official-badge i {
+    font-size: 1rem;
+    filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.8));
+  }
+
+  /* Animație la hover - se aprinde ușor insigna */
+  .official-badge:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 193, 7, 0.7);
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 152, 0, 0.25));
+    box-shadow: 0 6px 20px rgba(255, 193, 7, 0.25), inset 0 0 12px rgba(255, 193, 7, 0.1);
+    color: #fff;
+    text-shadow: 0 0 12px #ffc107;
+  }
+
+/* --- IMAGINI SI PDF --- */
+.preview-image {
+  border-radius: 8px;
+  border: 1px solid var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.15);
+}
+
+.pdf-display-box {
+  background-color: rgba(0, 242, 255, 0.05) !important;
+  border: 1px dashed var(--neon-cyan) !important;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+  .pdf-display-box:hover {
+    background-color: rgba(0, 242, 255, 0.1) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+  }
+
+.pdf-icon {
+  font-size: 3rem;
+  color: #ff4757 !important;
+  text-shadow: 0 0 15px rgba(255, 71, 87, 0.5);
+  margin-bottom: 15px;
+}
+
+.btn-download-pdf {
+  background: transparent !important;
+  border: 1px solid var(--neon-cyan) !important;
+  color: var(--neon-cyan) !important;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 10px 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+  .btn-download-pdf:hover {
+    background: var(--neon-cyan) !important;
+    color: #000 !important;
+    box-shadow: 0 0 15px var(--neon-cyan);
+    transform: scale(1.05);
+  }
+
+/* --- COMENTARII --- */
+.comments-section {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px !important;
+  margin-top: 15px;
+}
+
+.comment-row {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border-left: 2px solid var(--neon-cyan);
+}
+
+.comment-input-wrapper {
+  margin-top: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.send-btn {
+  color: var(--neon-cyan) !important;
+  background: rgba(0, 242, 255, 0.1) !important;
+  width: 45px;
+  height: 45px;
+  border-radius: 50% !important;
+}
+
+  .send-btn:hover {
+    background: var(--neon-cyan) !important;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px var(--neon-cyan);
+  }
+
+.comment-author-link {
+  color: var(--neon-cyan);
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+  .comment-author-link:hover {
+    text-shadow: 0 0 8px var(--neon-cyan);
+  }
+
+.role-restriction-msg {
+  background: rgba(0, 255, 136, 0.05);
+  border-left: 4px solid #00ff88;
+  border-radius: 6px;
+  padding: 12px 15px;
+  margin-top: 20px;
+  color: #00ff88;
+}
+/* --- STILIZARE LINK AUTOR POSTARE --- */
+.author-link {
+  color: var(--neon-cyan); /* Sau pune #007bff daca preferi albastrul clasic de link */
+  cursor: pointer; /* Transforma sageata in manuta */
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+  .author-link:hover {
+    color: #fff;
+    text-shadow: 0 0 10px var(--neon-cyan);
+    
+  }
+/* --- RESPONSIVE POST CARD (MOBIL) --- */
+@media screen and (max-width: 768px) {
+  /* Reducem putin inaltimea pozei pe ecrane mici */
+  .preview-image {
+    height: 250px !important;
+  }
+
+  /* Titlul postarii mai mic */
+  .p-card-title {
+    font-size: 1.2rem !important;
+  }
+
+  /* Insigna de profesor mai compacta */
+  .official-badge {
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+
+  /* Footer-ul cu butoane - le asezam pe coloana daca nu incap */
+  .custom-footer {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 15px;
+  }
+
+  /* Zona de scriere comentariu adaptata */
+  .comment-input-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .send-btn {
+    width: 100%;
+    border-radius: 8px !important;
+  }
+}

@@ -1,16 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\AcademicNode.API\\Controllers",
-    "\\AcademicNode.API\\DTOs",
     "\\AcademicNode.UI",
-    "\\AcademicNode.UI\\src",
-    "\\AcademicNode.UI\\src\\app",
-    "\\AcademicNode.UI\\src\\app\\components",
-    "\\AcademicNode.UI\\src\\app\\components\\admin-panel",
-    "\\AcademicNode.UI\\src\\app\\components\\chatbot",
-    "\\AcademicNode.UI\\src\\app\\models"
+    "\\AcademicNode.UI\\src"
   ],
-  "SelectedNode": "\\AcademicNode.UI\\src\\app\\components\\chatbot\\chatbot.html",
+  "SelectedNode": "\\AcademicNode.UI\\src\\assets",
   "PreviewInSolutionExplorer": false
 }

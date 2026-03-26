@@ -96,3 +96,59 @@ textarea.p-inputtext {
 .p-dialog .p-dialog-header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+/* =========================================
+   RESPONSIVE DESIGN - GLOBALE (TELEFOANE & TABLETE)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  /* Ferestrele de editare / adaugare sa ocupe tot ecranul pe mobil */
+  .p-dialog {
+    width: 95vw !important;
+    max-height: 95vh;
+  }
+
+  /* Reducem padding-ul general pentru a face loc continutului */
+  .container, .p-4 {
+    padding: 10px !important;
+  }
+
+  /* Bara de navigare principala (daca ai butoane mari, sa se adapteze) */
+  .action-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+    .action-bar .p-button {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+}
+/* =========================================
+   RESPONSIVE DESIGN - LOGIN & REGISTER (MOBIL)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  /* Facem cardul de login/register sa ocupe aproape tot ecranul */
+  ::ng-deep .p-card {
+    width: 95vw !important;
+    margin: 10px auto !important;
+    padding: 10px !important;
+  }
+
+  /* Asiguram ca inputurile si parolele ocupa toata latimea */
+  .p-inputtext,
+  ::ng-deep .p-password input {
+    width: 100% !important;
+  }
+
+  /* Daca ai imagine/logo pe pagina de login, o facem putin mai mica */
+  .login-logo, .register-logo {
+    width: 100px !important;
+    margin-bottom: 15px !important;
+  }
+
+  /* Spatiem butoanele ca sa nu apesi din greseala pe altul cu degetul */
+  .p-button {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+}

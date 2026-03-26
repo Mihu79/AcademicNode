@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TextareaModule } from 'primeng/textarea';
 import { TabsModule } from 'primeng/tabs';
+import { PostCardComponent } from '../post-card/post-card';
 
 @Component({
   selector: 'app-member-detail',
@@ -19,7 +20,7 @@ import { TabsModule } from 'primeng/tabs';
   imports: [
     CommonModule, FormsModule, CardModule, ButtonModule,
     DialogModule, InputTextModule, DatePickerModule,
-    TextareaModule, TabsModule
+    TextareaModule, TabsModule,PostCardComponent,
   ],
   templateUrl: './member-detail.html',
   styleUrl: './member-detail.css'
@@ -37,6 +38,79 @@ export class MemberDetailComponent implements OnInit {
   // NOU: Lista pentru postarile utilizatorului
   userPosts: any[] = [];
 
+  searchPostTitle: string = '';
+  userRoles: string[] = []; // Trebuie sa le extragem din currentUser la fel ca in feed, in ngOnInit
+
+  editPostVisible: boolean = false;
+  postData: any = { title: '', content: '' };
+  currentPostId: number | null = null;
+  selectedFile: File | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
+  isPdfSelected: boolean = false;
+
+  // Getter pentru filtrare in timp real pe profil
+  get filteredUserPosts() {
+    if (!this.searchPostTitle.trim()) return this.userPosts;
+    const term = this.searchPostTitle.toLowerCase();
+    return this.userPosts.filter(p => p.title?.toLowerCase().includes(term));
+  }
+
+  // Functii chemate de componenta post-card de pe profil
+  startEditPost(post: any) {
+    this.currentPostId = post.id;
+    this.postData = { title: post.title, content: post.content };
+    this.selectedFile = null;
+    this.previewUrl = null;
+    this.isPdfSelected = false;
+    this.editPostVisible = true;
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.isPdfSelected = file.type === 'application/pdf';
+
+      if (!this.isPdfSelected) {
+        const reader = new FileReader();
+        reader.onload = () => this.previewUrl = reader.result;
+        reader.readAsDataURL(file);
+      } else {
+        this.previewUrl = null;
+      }
+    }
+  }
+
+  submitPostUpdate() {
+    const formData = new FormData();
+    formData.append('title', this.postData.title);
+    formData.append('content', this.postData.content);
+
+    // Daca utilizatorul a incarcat o poza/pdf nou in dialog
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    }
+
+    this.apiService.updatePost(this.currentPostId!, formData).subscribe({
+      next: () => {
+        this.editPostVisible = false;
+        this.loadUserPosts(this.member!.username); // Reincarcam lista cu poza noua
+        alert("Postare actualizată cu succes!");
+      },
+      error: () => alert("Eroare la editare!")
+    });
+  }
+  deletePost(postId: number) {
+    if (confirm("Sigur ștergi această postare?")) {
+      this.apiService.deletePost(postId).subscribe({
+        next: () => {
+          this.userPosts = this.userPosts.filter(p => p.id !== postId);
+          this.cdr.detectChanges();
+        }
+      });
+    }
+  }
+
   newExperience: any = {};
   newEducation: any = {};
   newProject: any = {};
@@ -51,8 +125,15 @@ export class MemberDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const userString = localStorage.getItem('user');
-    if (userString && userString !== 'undefined') {
+    if (userString && userString !== 'undefined' && userString !== 'null') {
       this.currentUser = JSON.parse(userString);
+
+      // MAGIA CARE LIPSEA: Extragem rolurile din Token și pe pagina de profil!
+      if (this.currentUser.token) {
+        const payload = JSON.parse(atob(this.currentUser.token.split('.')[1]));
+        const roles = payload.role;
+        this.userRoles = Array.isArray(roles) ? roles : (roles ? [roles] : []);
+      }
     }
     this.loadMember();
   }
@@ -88,8 +169,19 @@ export class MemberDetailComponent implements OnInit {
   // NOU: Functia care cheama API-ul de postari
   loadUserPosts(username: string) {
     this.apiService.getUserPosts(username).subscribe({
-      next: (posts) => {
-        this.userPosts = posts;
+      next: (posts: any[]) => {
+        // Mapam fiecare postare si ii atasam fortat rolul, ca PostCardComponent sa il vada
+        this.userPosts = posts.map(p => {
+          if (this.member) {
+            p.appUser = p.appUser || {};
+            p.appUser.userName = this.member.username;
+            // Daca profilul pe care ne uitam e de profesor, punem stampila pe postare
+            if (this.member.role === 'Professor') {
+              p.appUser.userRoles = [{ role: { name: 'Professor' } }];
+            }
+          }
+          return p;
+        });
         this.cdr.detectChanges();
       },
       error: (err) => console.error("Eroare la aducerea postarilor", err)

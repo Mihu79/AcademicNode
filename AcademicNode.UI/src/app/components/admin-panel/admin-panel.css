@@ -215,3 +215,109 @@ h2.text-warning {
   border-radius: 20px;
   font-weight: bold;
 }
+/* =========================================
+   RESPONSIVE DESIGN - ADMIN PANEL (MOBIL)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  /* MAGIA PENTRU TABELE: Le lasam sa faca scroll orizontal pe mobil */
+  ::ng-deep .p-datatable-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch; /* Scroll fin pe iOS */
+    border-radius: 8px;
+  }
+
+  /* Reducem dimensiunea textului in capul de tabel pentru a incapea mai mult info */
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    font-size: 0.85rem !important;
+    padding: 0.5rem !important;
+  }
+
+  /* Reducem spatierea in celule */
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    font-size: 0.9rem !important;
+    padding: 0.5rem !important;
+  }
+
+  /* Daca avem butoane de actiune in tabel (ex: Sterge, Editeaza), le punem unele sub altele */
+  .action-buttons-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  /* Micsoram butoanele din tabel ca sa nu ocupe jumatate de ecran */
+  ::ng-deep .p-datatable .p-button {
+    padding: 0.4rem 0.8rem !important;
+    font-size: 0.85rem !important;
+  }
+}
+/* =========================================
+   RESPONSIVE DESIGN - ADMIN PANEL PREMIUM (MOBIL)
+   ========================================= */
+@media screen and (max-width: 768px) {
+  /* 1. Lățim cardul principal din margine în margine */
+  ::ng-deep .p-card {
+    margin: 0 !important;
+    border-radius: 0 !important;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* Scoatem padding-ul lateral ca tabelul să respire */
+  ::ng-deep .p-card-body {
+    padding: 15px 0 !important;
+  }
+
+  /* 2. Scroll orizontal elegant și modern */
+  ::ng-deep .p-datatable-wrapper {
+    overflow-x: auto !important;
+    padding: 0 10px; /* Lăsăm un pic de spațiu la extremități */
+    -webkit-overflow-scrolling: touch;
+    /* Scrollbar personalizat Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--neon-cyan) transparent;
+  }
+
+    /* Scrollbar personalizat Chrome/Safari/Edge */
+    ::ng-deep .p-datatable-wrapper::-webkit-scrollbar {
+      height: 4px; /* Foarte subțire și fin */
+    }
+
+    ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    ::ng-deep .p-datatable-wrapper::-webkit-scrollbar-thumb {
+      background-color: var(--neon-cyan);
+      border-radius: 10px;
+      box-shadow: 0 0 5px var(--neon-cyan); /* Efect de neon pe scrollbar */
+    }
+
+  /* 3. Optimizarea textului din tabel */
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+    font-size: 0.9rem !important;
+    padding: 0.75rem 0.5rem !important;
+    white-space: nowrap; /* Împiedică textul să se rupă pe mai multe rânduri haotic */
+  }
+
+  /* 4. Magie pe butoanele de acțiune: Ascundem textul, lăsăm doar iconița! */
+  ::ng-deep .p-datatable .p-button .p-button-label {
+    display: none !important;
+  }
+
+  ::ng-deep .p-datatable .p-button {
+    width: 35px !important;
+    height: 35px !important;
+    padding: 0 !important;
+    justify-content: center;
+    border-radius: 50% !important; /* Le facem rotunde pentru a arăta ca niște aplicații native */
+  }
+
+  .action-buttons-cell {
+    display: flex;
+    flex-direction: row !important; /* Pe mobil le punem pe orizontală */
+    gap: 8px;
+    justify-content: center;
+  }
+}
