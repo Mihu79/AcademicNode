@@ -417,6 +417,66 @@ label {
     color: var(--text-secondary);
     opacity: 0.7;
   }
+
+
+  /* --- STILIZARE BUTON FOLLOW (DREAPTA SUS) --- */
+.follow-action-right {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+/* Facem butonul puțin mai rotund și mai elegant */
+/* --- 1. BUTONUL CÂND NU URMĂREȘTI (Acțiunea principală - Aprins) --- */
+::ng-deep .follow-btn-style {
+  background-color: var(--neon-cyan) !important;
+  color: #000 !important; /* Text negru pe fundal cyan pentru contrast maxim */
+  border: none !important;
+  border-radius: 20px !important;
+  font-weight: bold !important;
+  padding: 0.5rem 1.2rem !important;
+  box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+  ::ng-deep .follow-btn-style:hover {
+    background-color: #fff !important;
+    box-shadow: 0 4px 20px rgba(0, 242, 255, 0.6);
+    transform: translateY(-2px);
+  }
+
+/* --- 2. BUTONUL CÂND URMĂREȘTI (Acțiune secundară - Discret / Transparent) --- */
+::ng-deep .following-btn-style {
+  background-color: transparent !important; /* Scoatem culoarea de fundal */
+  border: 1px solid rgba(255, 255, 255, 0.4) !important; /* Un chenar fin, gri-alb */
+  color: #fff !important; /* Text alb curat */
+  border-radius: 20px !important;
+  font-weight: bold !important;
+  padding: 0.5rem 1.2rem !important;
+  transition: all 0.3s ease;
+}
+
+  /* TRUC DE DESIGN: Când duci mouse-ul peste el, se face subtil roșu pentru 'Unfollow' */
+  ::ng-deep .following-btn-style:hover {
+    background-color: rgba(0, 242, 255, 0.1) !important;
+    border-color: var(--neon-cyan) !important;
+    color: var(--neon-cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+  }
+/* RESPONSIVE: Pe telefon îl aducem înapoi pe centru ca să nu se suprapună peste text/poză */
+@media screen and (max-width: 768px) {
+  .follow-action-right {
+    position: relative; /* Scoatem plutirea */
+    top: auto;
+    right: auto;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+}
 /* --- RESPONSIVE PROFIL (MOBIL) --- */
 @media screen and (max-width: 768px) {
   /* Redimensionam imaginea de profil */
@@ -447,4 +507,125 @@ label {
   .custom-search-wrapper {
     margin-bottom: 15px;
   }
+}
+
+/* --- ZONA DREAPTA (Buton + Statistici) --- */
+.follow-action-right {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column; /* Pune elementele pe verticală */
+  align-items: center; /* Le centrează unul față de celălalt */
+  gap: 8px; /* Spațiu între buton și text */
+}
+
+/* Un mic efect de fundal discret pentru statistici (opțional, arată premium) */
+.stats-container {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px 15px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.stats-hover {
+  cursor: pointer !important; /* Forțează apariția mânuței */
+  display: flex;
+  align-items: center; /* Aliniază perfect cifra cu textul pe verticală */
+  transition: all 0.2s ease;
+}
+
+  .stats-hover:hover {
+    color: var(--neon-cyan) !important;
+    transform: translateY(-2px);
+  }
+/* RESPONSIVE: Pe telefon le aducem frumos pe centru sub poză */
+@media screen and (max-width: 768px) {
+  .follow-action-right {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+}
+.hover-bg-neon {
+  cursor: pointer !important; /* Forțează apariția mânuței pe tot rândul */
+  transition: background-color 0.2s ease;
+}
+
+  .hover-bg-neon:hover {
+    background-color: rgba(0, 242, 255, 0.1) !important;
+  }
+/* --- STILIZARE FERESTRE (MODALS) --- */
+/* Scoatem marginile standard ca să putem întinde lista */
+::ng-deep .premium-dialog .p-dialog-content {
+  padding: 0 !important;
+}
+
+::ng-deep .premium-dialog .p-dialog-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.2rem 1.5rem;
+}
+
+/* Dacă sunt zeci de useri, lista devine scrollabilă */
+.user-list-container {
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+/* Design-ul pentru "Nu există date" */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+}
+
+/* --- RÂNDURILE CU UTILIZATORI --- */
+.user-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+  border-radius: 12px; /* Colțuri rotunjite frumos */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 4px;
+}
+
+  .user-list-item:hover {
+    background-color: rgba(0, 242, 255, 0.08); /* Un fundal fin cyan */
+    transform: translateX(5px); /* Se mută subtil spre dreapta */
+  }
+
+/* --- AVATARUL (Cercul colorat) --- */
+.avatar-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--neon-cyan), #0055ff); /* Gradient modern */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 242, 255, 0.2);
+}
+/* Asigurăm că poza umple cercul și este perfect rotundă */
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%; /* O face rotundă */
+  object-fit: cover; /* Previne deformarea imaginii (o taie inteligent dacă e nevoie) */
+  border: 2px solid rgba(255, 255, 255, 0.1); /* Un chenar fin, opțional */
+}
+
+/* Ajustăm iconița de fallback să nu fie prea mare în cerc */
+.fallback-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
 }

@@ -13,14 +13,14 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { TextareaModule } from 'primeng/textarea';
 import { TabsModule } from 'primeng/tabs';
 import { PostCardComponent } from '../post-card/post-card';
-
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-member-detail',
   standalone: true,
   imports: [
     CommonModule, FormsModule, CardModule, ButtonModule,
     DialogModule, InputTextModule, DatePickerModule,
-    TextareaModule, TabsModule,PostCardComponent,
+    TextareaModule, TabsModule, PostCardComponent, RouterModule,
   ],
   templateUrl: './member-detail.html',
   styleUrl: './member-detail.css'
@@ -37,7 +37,11 @@ export class MemberDetailComponent implements OnInit {
 
   // NOU: Lista pentru postarile utilizatorului
   userPosts: any[] = [];
-
+  isFollowing: boolean = false;
+  followersList: any[] = [];
+  followingList: any[] = [];
+  showFollowersDialog: boolean = false;
+  showFollowingDialog: boolean = false;
   searchPostTitle: string = '';
   userRoles: string[] = []; // Trebuie sa le extragem din currentUser la fel ca in feed, in ngOnInit
 
@@ -124,6 +128,7 @@ export class MemberDetailComponent implements OnInit {
  
 
   ngOnInit(): void {
+    // 1. Păstrăm logica ta pentru utilizatorul curent și extragerea rolurilor
     const userString = localStorage.getItem('user');
     if (userString && userString !== 'undefined' && userString !== 'null') {
       this.currentUser = JSON.parse(userString);
@@ -135,7 +140,24 @@ export class MemberDetailComponent implements OnInit {
         this.userRoles = Array.isArray(roles) ? roles : (roles ? [roles] : []);
       }
     }
-    this.loadMember();
+
+    // 2. RADARUL PENTRU LINK: Ascultăm orice schimbare a adresei web
+    this.route.paramMap.subscribe(params => {
+      // Extragem numele din noul link pe care tocmai ai dat click
+      const currentUsername = params.get('username');
+
+      if (currentUsername) {
+        // Închidem ferestrele mici (dacă erau deschise din profilul anterior)
+        this.showFollowersDialog = false;
+        this.showFollowingDialog = false;
+
+        // Dacă funcția ta loadMember folosește o variabilă globală (ex: this.username), actualizeaz-o aici:
+        // this.username = currentUsername; 
+
+        // Acum că linkul s-a schimbat, forțăm aducerea datelor noi de la server!
+        this.loadMember();
+      }
+    });
   }
 
   loadMember() {
@@ -152,7 +174,7 @@ export class MemberDetailComponent implements OnInit {
 
         // NOU: Dupa ce am adus profilul, aducem si postarile lui!
         this.loadUserPosts(username);
-
+        this.loadFollowStats();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -164,6 +186,74 @@ export class MemberDetailComponent implements OnInit {
         }
       }
     })
+  }
+
+  toggleFollow() {
+    if (!this.member || !this.currentUser) return;
+
+    this.apiService.toggleFollow(this.member.username).subscribe({
+      next: () => {
+        // Inversăm starea butonului
+        this.isFollowing = !this.isFollowing;
+
+        // Actualizăm numărul live pe ecran
+        if (this.isFollowing) {
+          // Dacă i-am dat follow, mă adaug pe mine în listă (crește numărul)
+          this.followersList.push({ username: this.currentUser.username });
+        } else {
+          // Dacă i-am dat unfollow, mă scot din listă (scade numărul)
+          this.followersList = this.followersList.filter(user => user.username !== this.currentUser.username);
+        }
+      },
+      error: (err) => console.error("Eroare la follow/unfollow", err)
+    });
+  }
+
+  loadFollowStats() {
+    if (!this.member) return;
+
+    // 1. Aducem lista cu cine îl urmărește pe acest utilizator
+    this.apiService.getFollowers(this.member.username).subscribe(data => {
+      this.followersList = data;
+
+      // VERIFICAREA ANTIGLONȚ: Citim buletinul tău direct din seiful browserului
+      const userString = localStorage.getItem('user');
+
+      if (userString && userString !== 'undefined') {
+        const loggedInUser = JSON.parse(userString);
+
+        // Preluăm numele tău indiferent cum ni-l dă C#-ul (cu litere mari sau mici)
+        const myName = loggedInUser.username || loggedInUser.userName;
+
+        // Căutăm exact numele ăsta în lista primită de la server
+        this.isFollowing = this.followersList.some(user => user.username === myName);
+      }
+    });
+
+    // 2. Aducem lista cu pe cine urmărește el
+    this.apiService.getFollowing(this.member.username).subscribe(data => {
+      this.followingList = data;
+    });
+  }
+
+  openFollowers() {
+    if (!this.member) return;
+    this.apiService.getFollowers(this.member.username).subscribe({
+      next: (data) => {
+        this.followersList = data;
+        this.showFollowersDialog = true; // Deschidem fereastra
+      }
+    });
+  }
+
+  openFollowing() {
+    if (!this.member) return;
+    this.apiService.getFollowing(this.member.username).subscribe({
+      next: (data) => {
+        this.followingList = data;
+        this.showFollowingDialog = true; // Deschidem fereastra
+      }
+    });
   }
 
   // NOU: Functia care cheama API-ul de postari

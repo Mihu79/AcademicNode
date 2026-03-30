@@ -220,4 +220,55 @@ export class ApiService {
     // 3. Batem la usa serverului si ii aratam legitimația
     return this.http.get<any[]>(this.baseUrl + '/posts/user/' + username, { headers });
   }
+  toggleFollow(username: string) {
+    // 1. Scoatem utilizatorul logat din memoria browserului
+    const userString = localStorage.getItem('user');
+    let token = '';
+
+    if (userString && userString !== 'undefined') {
+      const user = JSON.parse(userString);
+      token = user.token; // Luăm jetonul (buletinul)
+    }
+
+    // 2. Îl punem în "plicul" cu antete (Headers) pe care îl trimitem la server
+    const headers = new HttpHeaders({
+      Authorization: 'Bearer ' + token
+    });
+
+    // 3. Facem cererea cu tot cu Headers
+    return this.http.post(this.baseUrl + '/users/' + username + '/toggle-follow', {}, { headers: headers });
+  }
+  getFollowers(username: string) {
+    // 1. Luăm buletinul (token-ul)
+    const userString = localStorage.getItem('user');
+    let token = '';
+    if (userString && userString !== 'undefined') {
+      token = JSON.parse(userString).token;
+    }
+
+    // 2. Îl pregătim pentru trimitere
+    const headers = new HttpHeaders({
+      Authorization: 'Bearer ' + token
+    });
+
+    // 3. Facem cererea cu tot cu buletin
+    return this.http.get<any[]>(this.baseUrl + '/users/' + username + '/followers', { headers: headers });
+  }
+
+  getFollowing(username: string) {
+    // 1. Luăm buletinul (token-ul)
+    const userString = localStorage.getItem('user');
+    let token = '';
+    if (userString && userString !== 'undefined') {
+      token = JSON.parse(userString).token;
+    }
+
+    // 2. Îl pregătim pentru trimitere
+    const headers = new HttpHeaders({
+      Authorization: 'Bearer ' + token
+    });
+
+    // 3. Facem cererea cu tot cu buletin
+    return this.http.get<any[]>(this.baseUrl + '/users/' + username + '/following', { headers: headers });
+  }
 }

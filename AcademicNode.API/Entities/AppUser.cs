@@ -38,7 +38,8 @@ namespace AcademicNode.API.Entities
         // Poza de profil (separata de pozele din postari)
         public string PhotoUrl { get; set; }
         // -----------------------------------------------
+        public ICollection<UserFollow> FollowedByUsers { get; set; }
+        public ICollection<UserFollow> FollowedUsers { get; set; }
 
-       
     }
 }

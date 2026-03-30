@@ -438,5 +438,84 @@ namespace AcademicNode.API.Controllers
 
             return BadRequest("Nu s-a putut actualiza certificarea");
         }
+
+        [HttpPost("{targetUsername}/toggle-follow")]
+        public async Task<ActionResult> ToggleFollow(string targetUsername)
+        {
+            // 1. Luăm ID-ul utilizatorului curent logat (cel care dă click) din Token
+            var userIdString = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var sourceUserId = int.Parse(userIdString);
+            var sourceUser = await _context.Users.Include(u => u.FollowedUsers).FirstOrDefaultAsync(u => u.Id == sourceUserId);
+
+            // 2. Căutăm utilizatorul pe care vrem să îl urmărim
+            var targetUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == targetUsername);
+
+            if (targetUser == null) return NotFound("Utilizatorul nu a fost găsit.");
+            if (sourceUser.UserName == targetUsername) return BadRequest("Nu îți poți da follow ție însuți!");
+
+            // 3. Verificăm dacă există deja follow-ul
+            var existingFollow = sourceUser.FollowedUsers.FirstOrDefault(f => f.TargetUserId == targetUser.Id);
+
+            if (existingFollow != null)
+            {
+                // Dacă există, înseamnă că dăm UNFOLLOW
+                sourceUser.FollowedUsers.Remove(existingFollow);
+            }
+            else
+            {
+                // Dacă NU există, înseamnă că dăm FOLLOW
+                sourceUser.FollowedUsers.Add(new UserFollow
+                {
+                    SourceUserId = sourceUser.Id,
+                    TargetUserId = targetUser.Id
+                });
+            }
+
+            if (await _context.SaveChangesAsync() > 0) return Ok();
+
+            return BadRequest("A apărut o problemă la actualizarea follow-ului.");
+        }
+
+        [HttpGet("{username}/followers")]
+        public async Task<ActionResult> GetFollowers(string username)
+        {
+            var user = await _context.Users
+                .Include(u => u.FollowedByUsers)
+                    .ThenInclude(f => f.SourceUser)
+                       
+                .FirstOrDefaultAsync(u => u.UserName == username);
+
+            if (user == null) return NotFound();
+
+            // MODIFICĂ SELECT-UL:
+            var followers = user.FollowedByUsers.Select(f => new {
+                username = f.SourceUser.UserName,
+                // Extragem URL-ul pozei principale (sau null dacă nu are)
+                photoUrl = f.SourceUser.PhotoUrl
+            });
+
+            return Ok(followers);
+        }
+
+        [HttpGet("{username}/following")]
+        public async Task<ActionResult> GetFollowing(string username)
+        {
+            var user = await _context.Users
+                .Include(u => u.FollowedUsers)
+                    .ThenInclude(f => f.TargetUser)
+                        
+                .FirstOrDefaultAsync(u => u.UserName == username);
+
+            if (user == null) return NotFound();
+
+            // MODIFICĂ SELECT-UL:
+            var following = user.FollowedUsers.Select(f => new {
+                username = f.TargetUser.UserName,
+                // Extragem URL-ul pozei principale (sau null dacă nu are)
+                photoUrl = f.TargetUser.PhotoUrl
+            });
+
+            return Ok(following);
+        }
     }
 }

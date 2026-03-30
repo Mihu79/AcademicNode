@@ -41,8 +41,6 @@ namespace AcademicNode.API.Controllers
                 Coduri acțiune disponibile (folosește-le doar când userul cere navigare):
                 - 'nav_profile' (pentru profil, cv, experiență, studii)
                 - 'nav_home' (pentru acasă, feed, postări)
-                - 'nav_members' (pentru membri, colegi, căutare oameni)
-                - 'nav_messages' (pentru chat, mesaje private)
                 - '' (lasă gol dacă e doar o discuție normală)
 
                 User: {userMessage}

@@ -1,9 +1,14 @@
 {
   "ExpandedNodes": [
     "",
+    "\\AcademicNode.API\\wwwroot\\images",
     "\\AcademicNode.UI",
-    "\\AcademicNode.UI\\src"
+    "\\AcademicNode.UI\\src",
+    "\\AcademicNode.UI\\src\\app",
+    "\\AcademicNode.UI\\src\\app\\components",
+    "\\AcademicNode.UI\\src\\app\\components\\member-detail",
+    "\\AcademicNode.UI\\src\\app\\services"
   ],
-  "SelectedNode": "\\AcademicNode.UI\\src\\assets",
+  "SelectedNode": "\\README.md",
   "PreviewInSolutionExplorer": false
 }

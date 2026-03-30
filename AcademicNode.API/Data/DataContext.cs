@@ -75,6 +75,24 @@ namespace AcademicNode.API.Data
                 .WithMany(l => l.Likes)
                 .HasForeignKey(s => s.TargetPostId)
                 .OnDelete(DeleteBehavior.Cascade); // Ștergem Postarea -> Se șterg Like-urile ei (OK)
+
+
+            builder.Entity<UserFollow>()
+        .HasKey(k => new { k.SourceUserId, k.TargetUserId });
+
+            // Configurare: Cine dă follow
+            builder.Entity<UserFollow>()
+                .HasOne(s => s.SourceUser)
+                .WithMany(l => l.FollowedUsers)
+                .HasForeignKey(s => s.SourceUserId)
+                .OnDelete(DeleteBehavior.Cascade); // Dacă ștergem userul, se șterg și follow-urile date
+
+            // Configurare: Cine primește follow
+            builder.Entity<UserFollow>()
+                .HasOne(s => s.TargetUser)
+                .WithMany(l => l.FollowedByUsers)
+                .HasForeignKey(s => s.TargetUserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

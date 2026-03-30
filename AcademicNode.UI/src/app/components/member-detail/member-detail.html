@@ -15,6 +15,28 @@
             <input #fileInput type="file" (change)="onPhotoSelected($event)" accept="image/*" style="display: none;">
           </div>
 
+          <div class="follow-action-right">
+
+            <p-button *ngIf="currentUser && currentUser.username !== member.username"
+                      [label]="isFollowing ? 'Urmărești' : 'Urmărește'"
+                      [icon]="isFollowing ? 'pi pi-check' : 'pi pi-user-plus'"
+                      [styleClass]="isFollowing ? 'following-btn-style' : 'follow-btn-style'"
+                      (onClick)="toggleFollow()">
+            </p-button>
+
+            <div class="flex gap-4 mt-3 stats-container">
+              <div class="stats-hover" (click)="openFollowers()">
+                <span class="font-bold text-xl">{{followersList.length || 0}}</span>
+                <span class="text-500 ml-1">Urmăritori</span>
+              </div>
+              <div class="stats-hover" (click)="openFollowing()">
+                <span class="font-bold text-xl">{{followingList.length || 0}}</span>
+                <span class="text-500 ml-1">Urmăriți</span>
+              </div>
+            </div>
+
+          </div>
+
           <h2 class="text-white mb-2">{{ member.knownAs || member.username }}</h2>
           <p style="color: cyan;">{{ member.role | json }}</p>
           <div class="flex flex-column align-items-center gap-2 mb-4 mt-3">
@@ -175,6 +197,65 @@
     <br />
     <div class="flex justify-content-end mt-3">
       <p-button label="Salvează Modificările" icon="pi pi-check" (onClick)="submitPostUpdate()"></p-button>
+    </div>
+  </div>
+</p-dialog>
+<p-dialog header="Urmăritori" [(visible)]="showFollowersDialog" [modal]="true" [style]="{width: '400px'}" [draggable]="false" styleClass="premium-dialog">
+
+  <div *ngIf="followersList.length === 0" class="empty-state">
+    <i class="pi pi-users text-4xl mb-3 text-400"></i>
+    <span class="text-500">Nu are urmăritori momentan.</span>
+  </div>
+
+  <div class="user-list-container">
+    <div *ngFor="let user of followersList"
+         class="user-list-item"
+         [routerLink]="['/members', user.username]"
+         (click)="showFollowersDialog = false">
+
+      <div class="flex align-items-center gap-3">
+        <div class="avatar-circle">
+          <img *ngIf="user.photoUrl"
+               [src]="user.photoUrl.startsWith('http') ? user.photoUrl : 'http://localhost:5160/' + user.photoUrl"
+               (error)="user.photoUrl = null"
+               alt="{{user.username}} profile picture"
+               class="avatar-img">
+          <i *ngIf="!user.photoUrl" class="pi pi-user fallback-icon text-xl"></i>
+        </div>
+        <span class="font-bold text-lg">{{user.username}}</span>
+      </div>
+
+      <i class="pi pi-angle-right text-500 text-xl"></i>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Urmăriți" [(visible)]="showFollowingDialog" [modal]="true" [style]="{width: '400px'}" [draggable]="false" styleClass="premium-dialog">
+
+  <div *ngIf="followingList.length === 0" class="empty-state">
+    <i class="pi pi-user-minus text-4xl mb-3 text-400"></i>
+    <span class="text-500">Nu urmărește pe nimeni momentan.</span>
+  </div>
+
+  <div class="user-list-container">
+    <div *ngFor="let user of followingList"
+         class="user-list-item"
+         [routerLink]="['/members', user.username]"
+         (click)="showFollowingDialog = false">
+
+      <div class="flex align-items-center gap-3">
+        <div class="avatar-circle">
+          <img *ngIf="user.photoUrl"
+               [src]="user.photoUrl.startsWith('http') ? user.photoUrl : 'http://localhost:5160/' + user.photoUrl"
+               (error)="user.photoUrl = null"
+               alt="{{user.username}} profile picture"
+               class="avatar-img">
+          <i *ngIf="!user.photoUrl" class="pi pi-user fallback-icon text-xl"></i>
+        </div>
+        <span class="font-bold text-lg">{{user.username}}</span>
+      </div>
+
+      <i class="pi pi-angle-right text-500 text-xl"></i>
     </div>
   </div>
 </p-dialog>
