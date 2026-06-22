@@ -1,12 +1,88 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\components\\feed\\feed.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AcademicNode.UI\\src\\app\\components\\feed\\feed.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AcademicNode.UI\\angular.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\services\\api.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AcademicNode.UI\\src\\app\\services\\api.ts||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.API\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AcademicNode.API\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "feed.ts",
+              "DocumentMoniker": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
+              "RelativeDocumentMoniker": "AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
+              "ToolTip": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
+              "RelativeToolTip": "AcademicNode.UI\\src\\app\\components\\feed\\feed.ts",
+              "ViewState": "AgIAAB0AAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-15T10:07:57.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "angular.json",
+              "DocumentMoniker": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\angular.json",
+              "RelativeDocumentMoniker": "AcademicNode.UI\\angular.json",
+              "ToolTip": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\angular.json",
+              "RelativeToolTip": "AcademicNode.UI\\angular.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-15T10:07:11.258Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "api.ts",
+              "DocumentMoniker": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\services\\api.ts",
+              "RelativeDocumentMoniker": "AcademicNode.UI\\src\\app\\services\\api.ts",
+              "ToolTip": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.UI\\src\\app\\services\\api.ts",
+              "RelativeToolTip": "AcademicNode.UI\\src\\app\\services\\api.ts",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-15T10:06:59.623Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.API\\Program.cs",
+              "RelativeDocumentMoniker": "AcademicNode.API\\Program.cs",
+              "ToolTip": "C:\\Users\\mazil\\OneDrive\\Desktop\\AcademicNode\\AcademicNode.API\\Program.cs",
+              "RelativeToolTip": "AcademicNode.API\\Program.cs",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-15T10:06:35.021Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
