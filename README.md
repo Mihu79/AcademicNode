@@ -67,3 +67,19 @@ dotnet ef database update
 
 # 3. Run the application
 dotnet run
+
+
+```
+### 3. Starting the Client (Angular Frontend)
+Open a new terminal and navigate to the client directory:
+
+```bash
+cd AcademicNode.UI
+
+# 1. Install dependencies (required only on the first run)
+npm install
+
+# 2. Build and serve the application
+ng serve -o
+```
+
