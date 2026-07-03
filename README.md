@@ -1,76 +1,69 @@
-﻿🚀 AcademicNode - Sistem de Socializare Academică
-AcademicNode este o platformă web modernă concepută pentru interacțiunea între studenți și profesori, oferind funcționalități avansate de profil, sistem de urmărire (Follow/Unfollow) și partajare de conținut.
+# 🎓 AcademicNode
+> **Next-Generation Academic Social Platform**
 
-🛠️ Tehnologii Utilizate
-Backend: .NET 8 Web API, Entity Framework Core, SQLite/SQL Server.
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-17+-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![PrimeNG](https://img.shields.io/badge/PrimeNG-Tailwind-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-Frontend: Angular 17+, PrimeNG, TailwindCSS/PrimeFlex.
+**AcademicNode** is a modern web platform dedicated to strengthening the academic community. Designed to facilitate fluid and collaborative interaction between students and professors, the platform offers a complete digital ecosystem with advanced profile features, real-time connections, and educational content sharing.
 
-Autentificare: JWT (JSON Web Tokens).
+---
 
-🏁 Instrucțiuni de Pornire (Ghid Rapid)
-Urmează acești pași pentru a rula aplicația local pe calculatorul tău.
+## ✨ Main Features
 
-1. Pre-cerințe
-Asigură-te că ai instalate următoarele:
+* 👥 **Advanced Connection System:** *Follow/Unfollow* functionality with real-time state updates.
+* 📱 **Intuitive Interface (Social Media Style):** Dynamic display of profile statistics (followers and following counts).
+* 🚀 **Interactive Navigation:** Detailed user tables featuring quick redirection to their respective profiles.
+* 🖼️ **Smart Media Management:** Optimized avatar display with an automatic fallback system to default icons in case of network errors.
+* 💻 **Fully Responsive Design:** Flawless user experience scaling seamlessly from desktop screens to mobile devices.
 
-.NET 8 SDK
+---
 
-Node.js (versiunea LTS)
+## 🗺️ Upcoming Features (Roadmap)
 
-Angular CLI (npm install -g @angular/cli)
+The development is ongoing. Here is a look at the planned enhancements for future releases:
 
-🖥️ Pasul 2: Pornirea Backend-ului (API)
-Deschide un terminal în folderul serverului:
+| Feature | Description / Location |
+| :--- | :--- |
+| **Reset Password** | Secure flow to recover and reset user account credentials. |
+| **Posts on Profile** | Ability for users to create and display updates directly on their personal feeds. |
+| **Expanded Contact Details** | Adding email and phone number fields in the "About" section (displayed alongside city and country). |
 
-Bash
+---
+
+## 🛠️ Architecture and Technologies
+
+The application is built using a decoupled (Client-Server) architecture, based on the latest industry standards:
+
+| Component | Technologies Used |
+| :--- | :--- |
+| **Backend** | `.NET 8 Web API`, `Entity Framework Core`, `SQL Server` / `SQLite` |
+| **Frontend** | `Angular 17+`, `PrimeNG`, `TailwindCSS` / `PrimeFlex` |
+| **Security** | Authentication and Authorization based on `JWT` (JSON Web Tokens) |
+
+---
+
+## 🚀 Quick Start Guide
+
+Follow the steps below to run the application locally in your development environment.
+
+### 1. Prerequisites
+Ensure your environment is configured with the following tools:
+* [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
+* [Node.js](https://nodejs.org/) (LTS version)
+* Angular CLI (install globally via `npm install -g @angular/cli`)
+
+### 2. Starting the Server (Backend API)
+Open a terminal and navigate to the server directory:
+
+```bash
 cd AcademicNode.API
-Restaurarea pachetelor NuGet:
 
-Bash
+# 1. Restore NuGet packages
 dotnet restore
-Actualizarea bazei de date (Migrations):
 
-Bash
+# 2. Apply migrations and create the database
 dotnet ef database update
-Rularea serverului:
 
-Bash
+# 3. Run the application
 dotnet run
-Notă: Serverul va porni implicit pe http://localhost:5160.
-
-🎨 Pasul 3: Pornirea Frontend-ului (Angular)
-Deschide un terminal nou în folderul de client:
-
-Bash
-cd AcademicNode.UI
-Instalarea dependențelor (doar prima dată):
-
-Bash
-npm install
-Pornirea aplicației:
-
-Bash
-ng serve -o
-Notă: Aplicația se va deschide automat în browser la adresa http://localhost:4200.
-
-✨ Funcționalități Implementate Recent
-Sistem Follow/Unfollow: Posibilitatea de a urmări alți utilizatori cu actualizare în timp real.
-
-Interfață Stil Instagram: Afișarea numărului de urmăritori și a persoanelor urmărite direct pe profil.
-
-Tabele Interactive: Liste detaliate cu utilizatori (Followers/Following) cu funcție de "teleportare" (navigare) pe profilul acestora.
-
-Gestionare Poze: Afișarea automată a pozelor de profil în liste, cu fallback la iconițe în caz de eroare.
-
-Design Responsive: Optimizare completă pentru desktop și dispozitive mobile.
-
-📂 Structura Proiectului
-/API - Logica de business, controllerele și contextul bazei de date.
-
-/Client - Componentele Angular, serviciile API și stilizarea CSS/PrimeNG.
-
-/Infrastructure - Migrări și configurații pentru baza de date.
-
-📝 Notă pentru Dezvoltatori
-Dacă întâmpinați erori de tip 401 Unauthorized la încărcarea listelor, asigurați-vă că sunteți autentificat (token-ul JWT trebuie să fie prezent în LocalStorage).
